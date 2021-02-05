@@ -1,11 +1,16 @@
 ### RUNS JAM'S CAFE APP ###
-# Jam's Cafe app v0.9
+# Jam's Cafe app v1.4
 
 # Updates in this version:
 # Menu functionality split into separate modules
 # Large, complex functions broken down into smaller components
+# All data types stored in lists of dictionaries with new keys added
+# Data persistence to/from .csv files (inc. data manipulation)
+# Lists printed in tabular format
+# Validation on product and courier selection when ordering
 
-import utils, data, appmenus, ordermenu, pcmenus, actions
+
+import utils, data, appmenus, ordermenu, pcmenus, shared
 from datetime import datetime
 
 
@@ -17,7 +22,11 @@ drinks = data.get_data_from_csv('./source/data/drinks.csv')
 couriers = data.get_data_from_csv('./source/data/couriers.csv')
 orders = data.get_data_from_csv('./source/data/orders.csv')
 
-# Reformats product data in orders list
+
+# Reformats product and price data in product/orders lists
+sandwiches = data.price_to_float(sandwiches)
+cakes = data.price_to_float(cakes)
+drinks = data.price_to_float(drinks)
 orders = data.products_str_to_lst(orders)
 
 
@@ -44,26 +53,26 @@ def exit_app():
 reload_product_menu = True # Condition on while loop that reloads product menu
 
 # Loads product menus after user selects product type
-def product_menu(item_list, item_type):
+def product_menu(product_list, product_type):
     global reload_product_menu
     
     while True: # Reloads product menu(s)
-        product_menu_choice = appmenus.product_menu(item_type) # Gets user's product menu selection
+        product_menu_choice = appmenus.product_menu(product_type) # Gets user's product menu selection
         utils.clear_terminal()
         utils.app_title()
         try:
             product_menu_choice = int(product_menu_choice)
             if product_menu_choice == 1:
-                actions.print_item_list(item_list, item_type)
+                shared.print_item_list(product_list, product_type)
 
             elif product_menu_choice == 2:
-                pcmenus.add_new_item(item_list, item_type)
+                pcmenus.add_new_product(product_list, product_type)
             
             elif product_menu_choice == 3:
-                pcmenus.update_item(item_list, item_type)
+                pcmenus.update_item(product_list, product_type) #Broken
             
             elif product_menu_choice == 4:
-                pcmenus.remove_item(item_list, item_type)
+                pcmenus.remove_item(product_list, product_type) #Broken
             
             elif product_menu_choice == 5:
                 break # Returns to product type menu
@@ -137,16 +146,16 @@ def navigate_menu():
                         courier_menu_choice = int(courier_menu_choice)
                         
                         if courier_menu_choice == 1:
-                            actions.print_item_list(couriers, 'courier')
+                            shared.print_item_list(couriers, 'courier')
                         
                         elif courier_menu_choice == 2:
-                            pcmenus.add_new_item(couriers, item_type)
+                            pcmenus.add_new_courier(couriers)
                         
                         elif courier_menu_choice == 3:
-                            pcmenus.update_item(couriers, item_type)
+                            pcmenus.update_item(couriers, item_type) #Broken!
                         
                         elif courier_menu_choice == 4:
-                            pcmenus.remove_item(couriers, item_type)
+                            pcmenus.remove_item(couriers, item_type) #Broken!
                         
                         elif courier_menu_choice == 5:
                             break # Returns to main menu
@@ -170,16 +179,16 @@ def navigate_menu():
                         order_menu_choice = int(order_menu_choice)
                         
                         if order_menu_choice == 1:
-                            actions.print_item_list(orders, 'order')
+                            shared.print_item_list(orders, 'order')
                         
                         elif order_menu_choice == 2:
-                            ordermenu.create_new_order(orders, couriers)
+                            ordermenu.create_new_order(orders, couriers, sandwiches, cakes, drinks)
                         
                         elif order_menu_choice == 3:
                             ordermenu.update_status(orders)
                         
                         elif order_menu_choice == 4:
-                            ordermenu.update_order(orders, couriers)
+                            ordermenu.update_order(orders, couriers) #Broken!
                         
                         elif order_menu_choice == 5:
                             ordermenu.delete_order(orders)
@@ -212,5 +221,3 @@ def run_app():
     navigate_menu()
 
 run_app()
-
-

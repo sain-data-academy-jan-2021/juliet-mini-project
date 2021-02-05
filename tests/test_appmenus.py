@@ -12,7 +12,7 @@ def test_get_option_with_number_input():
     
     expected = '2'
     
-    # Actual
+    # Act
     actual = get_option(mock_input)
     
     # Assert
@@ -29,7 +29,7 @@ def test_get_option_with_word_input():
     
     expected = 'two'
     
-    # Actual
+    # Act
     actual = get_option(mock_input)
     
     # Assert
@@ -46,7 +46,7 @@ def test_get_option_with_no_input():
     
     expected = ''
     
-    # Actual
+    # Act
     actual = get_option(mock_input)
     
     # Assert
@@ -63,7 +63,7 @@ def test_get_option_with_bool_input():
     
     expected = 'True'
     
-    # Actual
+    # Act
     actual = get_option(mock_input)
     
     # Assert
@@ -80,7 +80,7 @@ def test_get_option_with_hyphen_input():
     
     expected = '-'
     
-    # Actual
+    # Act
     actual = get_option(mock_input)
     
     # Assert

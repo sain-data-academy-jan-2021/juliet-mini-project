@@ -1,35 +1,64 @@
 ### ORDER MENU FUNCTIONALITY ###
 
 from datetime import datetime
-import utils
+import utils, shared
 
 
-# Renders user-inputted fields as required (used when creating new orders)
-def required_field(field_name):
-    
-    if field_name == 'Customer name':
-        o_field = input(f'* {field_name} (or enter 0 to cancel): ')  
-    else:
-        o_field = input(f'* {field_name}: ')
-    
-    while o_field == '':
-        print(f'This is a required field. Please provide {field_name}.\n')
-        o_field = input(f'* {field_name}: ')
-        
-    return o_field
-
+### CREATING NEW ORDERS ###
 
 # Validates user's courier selection against courier list
-def validate_courier(couriers_list):
-    print('\nAvailable couriers:- ' + ', '.join(couriers_list))
+def validated_courier(courier_list):
+    shared.print_tabulated_list(courier_list, 'courier')
+    max_courier_id = len(courier_list) - 1
     
-    o_courier = input('Preferred courier: ').capitalize()
-    while not o_courier in (couriers_list + ['']):
-        print(f'\n{o_courier} is unavailable. Please select an available courier or leave blank.')
-        o_courier = input('Preferred courier: ').capitalize()
-    
-    return o_courier
+    while True:
+        courier_id = input(f'Courier ID (or press Enter to skip): ')
+        if not courier_id:
+            return ''
+        
+        try:
+            courier_id = int(courier_id)
+            if courier_id > max_courier_id:
+                print(f'Ooops! Please select a valid Courier ID or leave blank.\n')
+            else:
+                return courier_id
+            
+        except ValueError:
+            print(f'Ooops! Please select a valid Courier ID or leave blank.\n')
 
+
+# Validates user's product selection against product lists
+def validated_product(product_list, product_type):
+    selected_products = []
+    shared.print_tabulated_list(product_list, product_type)
+    max_product_id = len(product_list) - 1
+    product_id = input(f'{product_type.capitalize()} ID (or press Enter to skip): ')
+    
+    while product_id:
+        try:
+            product_id = int(product_id)
+            
+            if product_id > max_product_id:
+                print(f'Ooops! Please select a valid {product_type.capitalize()} ID or leave blank.\n')
+            else:
+                selected_products.append(product_id)
+            
+        except ValueError:
+            print(f'Ooops! Please select a valid {product_type.capitalize()} ID or leave blank.\n')
+            
+        finally:
+            product_id = input(f'{product_type.capitalize()} ID (or press Enter to continue): ')
+    
+    return sorted(selected_products)
+
+
+# Validates order to check that user has added products to their order!
+def order_validation():
+    utils.clear_terminal()
+    utils.app_title()
+    print('We\'re sorry. Your order could not be placed as you didn\'t select any products.')
+    utils.return_to_menu()
+    
 
 # Generates order number and sets order date & time
 def order_autocalc(orders_list):
@@ -46,7 +75,7 @@ def order_autocalc(orders_list):
 
 
 # Prints order confirmation message
-def order_confirmation(o_name, o_number, o_date):
+def order_confirmation(o_name, o_number, o_date, o_sandwiches, o_cakes, o_drinks):
     utils.clear_terminal()
     utils.app_title()
     print('-------- JAM\'S ORDER CONFIRMATION --------\n')
@@ -54,23 +83,48 @@ def order_confirmation(o_name, o_number, o_date):
 YOUR ORDER SUMMARY
 Order number: {o_number}
 Order date: {o_date}
+Sandwiches: {o_sandwiches}
+Cakes: {o_cakes}
+Drinks: {o_drinks}
 Order status: PREPARING''')
 
 
+# Reloads/tidies up create order screen in between courier/product selections
+def reload_order_screen(section_heading):
+    utils.clear_terminal()
+    utils.app_title()
+    print('\n-------- JAM\'S ORDER FORM --------\n')
+    print(f'\n{section_heading}')
+
+
 # Creates a new order and adds it to the orders list
-def create_new_order(orders_list, couriers_list):
-    print('-------- JAM\'S ORDER FORM --------\n')
+def create_new_order(orders_list, couriers_list, sandwich_list, cake_list, drink_list):
+    print('\n-------- JAM\'S ORDER FORM --------\n')
     print('(* indicates required fields)\n')
     
-    o_name = required_field('Customer name')
+    reload_order_screen('CUSTOMER CONTACT DETAILS')
+    o_name = shared.required_field('Customer name', True)
     if o_name == '0': # Cancels and returns to order menu
         utils.clear_terminal()
         utils.app_title()
     
-    else: # Prompts user to complete rest of order form & validates courier selection
-        o_address = required_field('Customer address')
-        o_phone = required_field('Customer phone')
-        o_courier = validate_courier(couriers_list)
+    else: # Prompts user to complete rest of order form & validates courier/product selection
+        o_address = shared.required_field('Customer address', False)
+        o_phone = shared.required_field('Customer phone', False)
+        
+        reload_order_screen('PREFFERED COURIER')
+        o_courier = validated_courier(couriers_list)
+        
+        reload_order_screen('SANDWICHES & WRAPS')
+        o_sandwiches = validated_product(sandwich_list, 'sandwich')
+        reload_order_screen('CAKES & PASTRIES')
+        o_cakes = validated_product(cake_list, 'cake')
+        reload_order_screen('HOT & COLD DRINKS')
+        o_drinks = validated_product(drink_list, 'drink')
+        
+        if (not o_sandwiches) and (not o_cakes) and (not o_drinks):
+            order_validation()
+            return
 
         # Generates order number and sets order date
         o_number, o_date = order_autocalc(orders_list)
@@ -85,14 +139,17 @@ def create_new_order(orders_list, couriers_list):
                 'customer_phone': o_phone,
                 'courier': o_courier, 
                 'order_status': 'PREPARING',
+                'sandwiches': o_sandwiches, 
+                'cakes': o_cakes, 
+                'drinks': o_drinks
             }
         )
-        
-        order_confirmation(o_name, o_number, o_date)
+        order_confirmation(o_name, o_number, o_date, o_sandwiches, o_cakes, o_drinks)
         utils.return_to_menu()
 
 
-# Updates order status
+### UPDATING ORDER STATUS ###
+
 def update_status(orders_list):
     # Gets a list of all order numbers
     o_numbers = [order.get('order_number') for order in orders_list]
@@ -125,7 +182,7 @@ def update_status(orders_list):
     utils.return_to_menu()
 
 
-# Pushes out changes requested by user (if any) to the orders list
+# Pushes out changes requested by user (if any) to the orders list #BROKEN!
 def update_orders_list(o_number, orders_list, order_properties):
     update_count = 0
     for order in orders_list:
@@ -142,7 +199,7 @@ def update_orders_list(o_number, orders_list, order_properties):
         print(f'\nYou did not make any changes to order {o_number}.')
 
 
-# Updates customer and courier fields for specified order
+# Updates customer and courier fields for specified order #BROKEN!
 def update_order(orders_list, couriers_list):
     # Gets a list of all order numbers
     o_numbers = [order.get('order_number') for order in orders_list]

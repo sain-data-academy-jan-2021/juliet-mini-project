@@ -1,22 +1,66 @@
 ### PRODUCT MENU AND COURIER MENU FUNCTIONALITY ###
 
-import utils
+import utils, shared
 
 
-# Adds a new item to the product/courier lists
-def add_new_item(list, item_type):
-    new_item = input(f'Enter name of {item_type} to be added (or enter 0 to cancel): ').capitalize()
-    if new_item == '0': # Cancels and returns to sub-menu
+### CREATING NEW PRODUCTS & COURIERS ###
+
+# Creates a new product and adds it to the relevant product list
+def add_new_product(product_list, product_type):
+    product_names = [product.get('name') for product in product_list]
+    
+    print(f'\n-------- ADD A NEW {product_type.upper()} --------\n')
+    new_product = shared.required_field(f'New {product_type} name', True).capitalize()
+    
+    if new_product == '0': # Cancels and returns to sub-menu
         utils.clear_terminal()
         utils.app_title()
         return
     
-    elif not new_item in list:
-        list.append(new_item)
-        print(f'\n{new_item} has just been added to the {item_type} list!')
-        
+    elif not new_product in product_names:
+        while True:
+            new_price = input('Price: ')
+            
+            try:
+                new_price = float(new_price)
+                product_list.append({
+                                        'name': new_product,
+                                        'price': new_price
+                                    })
+                print(f'\n{new_product} has just been added to the {product_type} list!')
+                break
+            
+            except ValueError:
+                print(f'Ooops! {product_type} price must be a number. Please try again.')
+            
     else:
-        print(f'{new_item} is already on the {item_type} list!')
+        print(f'\n{new_product} is already on the {product_type} list!')
+    
+    utils.return_to_menu()
+
+
+# Creates a new courier and adds it to the courier list
+def add_new_courier(courier_list):
+    courier_names = [courier.get('name') for courier in courier_list]
+    
+    print(f'\n-------- ADD A NEW COURIER --------\n')
+    new_courier = shared.required_field(f'New courier name', True).capitalize()
+    
+    if new_courier == '0': # Cancels and returns to sub-menu
+        utils.clear_terminal()
+        utils.app_title()
+        return
+    
+    elif not new_courier in courier_names:
+        new_phone = shared.required_field('Phone', False).capitalize()
+        courier_list.append({
+                                'name': new_courier,
+                                'phone': new_phone
+                            })
+        print(f'\n{new_courier} has just been added to the courier list!')
+
+    else:
+        print(f'\n{new_courier} is already on the courier list!')
     
     utils.return_to_menu()
 

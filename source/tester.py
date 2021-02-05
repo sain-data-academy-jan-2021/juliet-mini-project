@@ -42,10 +42,10 @@ orders = [
      'drinks': '0,5,6'}
 ]
 
-def tabulate_test(lst):
-    dict_keys = list(lst[0])
-    data = [item.values() for item in lst]
-    print(tabulate.tabulate(data, dict_keys, tablefmt = 'psql'))
+# def tabulate_test(lst):
+#     dict_keys = list(lst[0])
+#     data = [item.values() for item in lst]
+#     print(tabulate.tabulate(data, dict_keys, tablefmt = 'psql'))
 
 # tabulate_test(orders)
 
@@ -118,8 +118,35 @@ my_dict = {'order_number': 'JAM-1',
             'drinks': '1,12,13'
             }
 
-headers = list(my_dict.keys())
-print(headers)
+# headers = list(my_dict.keys())
+# print(headers)
 
-dict_keys = list(utils.get_dict_keys('order').keys())
-print(dict_keys)
+# dict_keys = list(utils.get_dict_keys('order').keys())
+# print(dict_keys)
+
+# item_list = []
+# if not item_list:
+#     print(f'The list is currently empty.')
+
+
+# # Gets a list of product/courier strings from the global lists of dictionaries
+# def get_list_of_strings(item_list):
+#     temp_list = []
+#     for item in item_list:
+#         temp_list.append(item.get('name'))
+    
+#     return temp_list
+
+test_cakes = [{'name': 'Lemon drizzle cake', 'price': '2.45'}, {'name': 'Chocolate brownie', 'price': '2.25'}, {'name': "Millionaire's shortbread", 'price': '2.4'}, 
+              {'name': 'Carrot & walnut cake', 'price': '2.9'}, {'name': 'Blueberry muffin', 'price': '2.1'}, {'name': 'White chocolate cookie', 'price': '1.85'}, 
+              {'name': 'Peanut butter cookie', 'price': '1.85'}, {'name': 'Apple crumble muffin', 'price': '2.1'}, {'name': 'Fruity flapjack', 'price': '1.75'}, 
+              {'name': 'Pain au chocolat', 'price': '2.2'}, {'name': 'Pain aux raisins', 'price': '2.2'}, {'name': 'Almond croissant', 'price': '2.3'}, 
+              {'name': 'Lemon square', 'price': '2.25'}]
+
+# print(test_cakes)
+# print()
+
+price = 'two'
+price1 = float(price)
+print(type(price1))
+print(price1)

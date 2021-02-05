@@ -6,6 +6,7 @@ from io import UnsupportedOperation
 
 
 ### READING APP DATA FROM .CSV AND REFORMATTING ###
+
 # Reads app data from .csv file and stores as list of dictionaries
 def get_data_from_csv(filepath):
     temp_list = []
@@ -35,6 +36,14 @@ def get_data_from_csv(filepath):
         exit()
 
 
+# Converts product prices from strings to floats in product lists
+def price_to_float(product_list):
+    for product in product_list:
+        if 'price' in product:
+            product['price'] = float(product['price'])
+    return product_list
+
+
 # Converts string of numbers to a list
 def num_str_to_lst(num_str):
     if type(num_str) is str and num_str:
@@ -51,13 +60,15 @@ def num_str_to_lst(num_str):
 # Converts product values from strings to lists within the orders list (after reading from .csv)
 def products_str_to_lst(orders_list):
     for order in orders_list:
-        order.update(
-            {
-            'sandwiches': num_str_to_lst(order['sandwiches']), 
-            'cakes': num_str_to_lst(order['cakes']), 
-            'drinks': num_str_to_lst(order['drinks'])
-            }
-            )
+        if 'sandwiches' in order:
+            order['sandwiches'] = num_str_to_lst(order['sandwiches'])
+            
+        if 'cakes' in order:
+            order['cakes'] = num_str_to_lst(order['cakes'])
+            
+        if 'drinks' in order:
+            order['drinks'] = num_str_to_lst(order['drinks'])
+            
     return orders_list
 
 
