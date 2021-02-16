@@ -147,15 +147,14 @@ def navigate_menu():
                         order_menu_choice = int(order_menu_choice)
                         
                         if order_menu_choice == 1:
-                            shared.print_db_table_with_title('order') #Fixed
+                            shared.print_db_table_with_title('order')
                         
                         elif order_menu_choice == 2:
                             # ordermenu.create_new_order(orders)
                             pass #***Need to fix!***
                         
                         elif order_menu_choice == 3:
-                            # ordermenu.update_status(orders)
-                            pass #***Need to fix!***
+                            ordermenu.update_order_status()
                         
                         elif order_menu_choice == 4:
                             # ordermenu.update_order(orders)
@@ -192,5 +191,3 @@ def run_app():
     navigate_menu()
 
 run_app()
-
-

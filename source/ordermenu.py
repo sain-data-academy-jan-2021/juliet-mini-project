@@ -156,36 +156,54 @@ def create_new_order(orders_list):
             utils.return_to_menu()
 
 
-### UPDATING ORDER STATUS ###
+### UPDATING ORDER STATUS ### ***DONE!***
 
-def update_status(orders_list):
-    # Gets a list of all order ids
-    o_ids = [order.get('order_id') for order in orders_list]
+def update_order_status():
     statuses = ['PREPARING', 'READY', 'OUT FOR DELIVERY', 'DELIVERED', 'COMPLETED', 'CANCELLED', 'DELAYED', 'REJECTED']
+    print(f'\n-------- UPDATE ORDER STATUS --------\n')
     
-    o_id = input('Enter Order ID to be updated (or enter 0 to cancel): ').upper()
-    if o_id == '0': # Cancels and returns user to order menu
+    try:
+        shared.print_db_table('order')
+        order_ids = db.get_field_from_db_table('order', 'id')
+        
+    except:
+        utils.return_to_menu()
+        return
+    
+    # User selects ID of item to be updated
+    order_id = input(f'\nOrder ID to be updated (or enter 0 to cancel): ')
+    
+    try:
+        order_id = int(order_id)
+    except ValueError:
+        pass
+    
+    if order_id == 0: # Cancels and returns user to order menu
         utils.clear_terminal()
         utils.app_title()
         return
-    
-    elif o_id not in o_ids: # Checks if order id is valid
-        print(f'\nOrder {o_id} could not be found. Order ID is either invalid or it has been deleted from our system.' )
-    
-    else: # Updates order status
+
+    elif order_id in order_ids: # Checks if order id is valid then updates status       
         print('\nStatuses:- ' + ', '.join(statuses))
-        o_status = input('Enter new order status: ').upper()
+        new_status = input('New order status: ').upper()
         
         # Checks that inputted status is valid
-        while not o_status in statuses:
-            print(f'\n{o_status} is not a valid status.')
-            o_status = input('Enter new order status: ').upper()
+        while not new_status in statuses:
+            print(f'\n{new_status} is not a valid status.')
+            new_status = input('Enter new order status: ').upper()
+                
+        try:
+            order_number = db.get_item_name_from_db_table('order', order_id)
+            new_values = f'order_status = \'{new_status}\''
+            db.update_record_in_db('order', order_id, new_values)
+            print(f'\nThe order status of {order_number} has been updated to {new_status}.')
             
-        for order in orders_list:
-            if order.get('order_id') == o_id:
-                order['order_status'] = o_status
-                print(f'\nThe order status of {o_id} has been updated to {o_status}.')
-                break
+        except:
+            utils.return_to_menu()
+            return
+    
+    else:
+        print(f'\nOrder ID {order_id} could not be found. Order ID is either invalid or it has been deleted from our database.' )
     
     utils.return_to_menu()
 
@@ -260,43 +278,3 @@ def update_order(orders_list):
         
         finally:
             utils.return_to_menu()
-
-
-# DELETING EXISTING ORDERS
-# Deletes an order from the order list
-def delete_item(item_list, item_type):
-    print(f'\n-------- DELETE AN EXISTING {item_type.upper()} --------\n')
-    shared.print_tabulated_list(item_list, item_type)
-    
-    if item_type == 'order':
-        id_key = 'order_id'
-        name_key = 'order_id'
-    else:
-        id_key = 'id'
-        name_key = 'name'
-    
-    # Gets a list of all unique identifiers (order no.)
-    item_ids = [item.get(id_key) for item in item_list]
-    item_id = input(f'{item_type.capitalize()} ID (or enter 0 to cancel): ').upper()
-    
-    try:
-        item_id = int(item_id)
-    except ValueError:
-        pass
-    
-    if item_id == 0: # Cancels and returns user to app menu
-        utils.clear_terminal()
-        utils.app_title()
-        return
-    
-    elif item_id in item_ids: # Checks if item id is valid then deletes item
-        for item in item_list:
-            if item.get(id_key) == item_id:
-                item_list.remove(item)
-                print(f'\n{item[name_key]} has been deleted.')
-                break
-    
-    else:
-        print(f'\n{item_type.capitalize()} {item_id} could not be found. {item_type.capitalize()} ID is either invalid or it has been deleted from our system.' )
-    
-    utils.return_to_menu()

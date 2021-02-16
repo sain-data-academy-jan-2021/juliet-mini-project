@@ -6,10 +6,10 @@ import utils, shared, db
 ### CREATING NEW COURIERS ###
 
 # Creates a new courier and adds it to the courier list
-def add_new_courier(db_table):
+def add_new_courier(item_type):
     # Gets a list of all courier names
     try:
-        courier_names = db.get_field_from_db_table(db_table, 'name')
+        courier_names = db.get_field_from_db_table(item_type, 'name')
     except:
         utils.return_to_menu()
         return
@@ -37,7 +37,7 @@ def add_new_courier(db_table):
         else:
             utils.clear_terminal()
             utils.app_title()
-            name_col = get_name_col_for_item(db_table)
+            name_col = utils.get_name_col_for_item(item_type)
             print(f'\n{new_courier} has been set up as a new courier!')
 
     else:

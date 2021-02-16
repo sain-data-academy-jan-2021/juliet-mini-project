@@ -146,11 +146,8 @@ def get_item_name_from_db_table(item_type, item_id):
 
 ### UPDATING THE DB ###
 
-# Adds a new record to the specified db table
-def create_new_record(item_type, values):
-    db_table = get_db_table_name(item_type)
-    col_names = utils.get_col_names_for_creating(db_table)
-    
+# Connects to db and executes a SQL query that will change db content
+def make_change_to_db_table(sql):
     try:
         cursor, connection = connect_to_db()
         
@@ -159,31 +156,39 @@ def create_new_record(item_type, values):
         raise ConnectionError
         
     try:
-        cursor.execute(f'INSERT INTO {db_table} ({col_names}) VALUES ({values})')
-        disconnect_from_db(cursor, connection)
-        
-    except:
-        roll_back_changes_to_db(connection)
-        print(f'\nWe\'re sorry, something\'s gone wrong. Unable to create a new record in the {db_table} table.\n')
-        raise ConnectionError
-
-
-# Deletes a record at the specified index in the db table
-def delete_record_from_db(item_type, item_id):
-    db_table = get_db_table_name(item_type)
-    
-    try:
-        cursor, connection = connect_to_db()
-        
-    except:
-        print('\nWe\'re sorry, something\'s gone wrong. Unable to connect to the database.')
-        raise ConnectionError
-        
-    try:
-        cursor.execute(f'DELETE FROM {db_table} WHERE id = {item_id}')
+        cursor.execute(sql)
         disconnect_from_db(cursor, connection)
         
     except:
         roll_back_changes_to_db(connection)
         print(f'\nWe\'re sorry, something\'s gone wrong. Unable to delete data from the {db_table} table.\n')
         raise ConnectionError
+
+
+# Adds a new record to the specified db table
+def create_new_record(item_type, values):
+    db_table = get_db_table_name(item_type)
+    col_names = utils.get_col_names_for_creating(db_table)
+    sql = f'INSERT INTO {db_table} ({col_names}) VALUES ({values})'
+    make_change_to_db_table(sql)
+
+
+# Deletes a record at the specified index in the db table
+def delete_record_from_db(item_type, item_id):
+    db_table = get_db_table_name(item_type)
+    sql = f'DELETE FROM {db_table} WHERE id = {item_id}'
+    make_change_to_db_table(sql)
+
+
+# Updates an existing record in the specified db table
+def update_record_in_db(item_type, item_id, new_values):
+    db_table = get_db_table_name(item_type)
+    sql = f'UPDATE {db_table} SET {new_values} WHERE id = {item_id}'
+    make_change_to_db_table(sql)
+
+
+
+# How to do multiple column value changes in one SQL query
+# UPDATE newpurchase 
+# SET receive_qty=20, pub_lang='Hindi', receive_dt='2008-07-10' 
+# WHERE purch_price > 50;
