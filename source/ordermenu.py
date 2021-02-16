@@ -1,44 +1,44 @@
 ### ORDER MENU FUNCTIONALITY ###
 
 from datetime import datetime
-import utils, shared
+import utils, shared, db
 
 
 ### CREATING NEW ORDERS ###
 
 # Validates user's courier selection against courier list
-def validated_courier(courier_list):
-    shared.print_tabulated_list(courier_list, 'courier')
-    max_courier_id = len(courier_list) - 1
+def validated_courier():
+    shared.print_db_table('courier')
+    courier_ids = db.get_field_from_db_table('couriers', 'id')
+    courier_id = input(f'Courier ID (or press Enter to skip): ')
     
-    while True:
-        courier_id = input(f'Courier ID (or press Enter to skip): ')
-        if not courier_id:
-            return ''
-        
+    while courier_id:
         try:
             courier_id = int(courier_id)
-            if courier_id > max_courier_id:
+            
+            if not courier_id in courier_ids:
                 print(f'Ooops! Please select a valid Courier ID or leave blank.\n')
             else:
                 return courier_id
             
         except ValueError:
             print(f'Ooops! Please select a valid Courier ID or leave blank.\n')
+            courier_id = input(f'Courier ID (or press Enter to continue): ')
 
 
 # Validates user's product selection against product lists
-def validated_product(product_list, product_type):
+def validated_product(db_table, product_type):
     selected_products = []
-    shared.print_tabulated_list(product_list, product_type)
-    max_product_id = len(product_list) - 1
+    shared.print_db_table(product_type)
+    product_ids = db.get_field_from_db_table(db_table, 'id')
+    
     product_id = input(f'{product_type.capitalize()} ID (or press Enter to skip): ')
     
     while product_id:
         try:
             product_id = int(product_id)
             
-            if product_id > max_product_id:
+            if not product_id in product_ids:
                 print(f'Ooops! Please select a valid {product_type.capitalize()} ID or leave blank.\n')
             else:
                 selected_products.append(product_id)
@@ -53,35 +53,35 @@ def validated_product(product_list, product_type):
 
 
 # Validates order to check that user has added products to their order!
-def order_validation():
+def empty_order_msg():
     utils.clear_terminal()
     utils.app_title()
     print('We\'re sorry. Your order could not be placed as you didn\'t select any products.')
     utils.return_to_menu()
     
 
-# Generates order number and sets order date & time
+# Generates order id and sets order date & time
 def order_autocalc(orders_list):
     try:
-        o_number = orders_list[-1].get('order_number', 'JAM-0')
-        o_number = 'JAM-' + str(int(o_number[4:]) + 1)
+        o_id = orders_list[-1].get('order_id', 'JAM-0')
+        o_id = 'JAM-' + str(int(o_id[4:]) + 1)
     except IndexError:
-        o_number = 'JAM-1'
+        o_id = 'JAM-1'
     
     # Sets order date as current date & time
     o_date = datetime.strftime(datetime.now(), '%d/%m/%Y %H:%M')
     
-    return o_number, o_date
+    return o_id, o_date
 
 
 # Prints order confirmation message
-def order_confirmation(o_name, o_number, o_date, o_sandwiches, o_cakes, o_drinks):
+def order_confirmation(o_name, o_id, o_date, o_sandwiches, o_cakes, o_drinks):
     utils.clear_terminal()
     utils.app_title()
     print('-------- JAM\'S ORDER CONFIRMATION --------\n')
     print(f'''Thanks for your order, {o_name}!\n
 YOUR ORDER SUMMARY
-Order number: {o_number}
+Order ID: {o_id}
 Order date: {o_date}
 Sandwiches: {o_sandwiches}
 Cakes: {o_cakes}
@@ -98,9 +98,9 @@ def reload_order_screen(section_heading):
 
 
 # Creates a new order and adds it to the orders list
-def create_new_order(orders_list, couriers_list, sandwich_list, cake_list, drink_list):
+def create_new_order(orders_list):
     print('\n-------- JAM\'S ORDER FORM --------\n')
-    print('(* indicates required fields)\n')
+    print('(* indicates a required field)\n')
     
     reload_order_screen('CUSTOMER CONTACT DETAILS')
     o_name = shared.required_field('Customer name', True)
@@ -112,57 +112,65 @@ def create_new_order(orders_list, couriers_list, sandwich_list, cake_list, drink
         o_address = shared.required_field('Customer address', False)
         o_phone = shared.required_field('Customer phone', False)
         
-        reload_order_screen('PREFFERED COURIER')
-        o_courier = validated_courier(couriers_list)
+        try:
+            reload_order_screen('PREFFERED COURIER')
+            o_courier = validated_courier()
+            
+            reload_order_screen('SANDWICHES & WRAPS')
+            o_sandwiches = validated_product('sandwiches', 'sandwich')
+            reload_order_screen('CAKES & PASTRIES')
+            o_cakes = validated_product('cakes', 'cake')
+            reload_order_screen('HOT & COLD DRINKS')
+            o_drinks = validated_product('drinks', 'drink')
         
-        reload_order_screen('SANDWICHES & WRAPS')
-        o_sandwiches = validated_product(sandwich_list, 'sandwich')
-        reload_order_screen('CAKES & PASTRIES')
-        o_cakes = validated_product(cake_list, 'cake')
-        reload_order_screen('HOT & COLD DRINKS')
-        o_drinks = validated_product(drink_list, 'drink')
+        except:
+            pass
         
-        if (not o_sandwiches) and (not o_cakes) and (not o_drinks):
-            order_validation()
-            return
+        else:
+            # Order validation
+            if (not o_sandwiches) and (not o_cakes) and (not o_drinks):
+                empty_order_msg()
+                return
 
-        # Generates order number and sets order date
-        o_number, o_date = order_autocalc(orders_list)
+            # Generates order id and sets order date
+            o_id, o_date = order_autocalc(orders_list)
+            
+            # Appends new order to the orders list
+            orders_list.append(
+                {
+                    'order_id': o_id,
+                    'order_date': o_date, 
+                    'customer_name': o_name, 
+                    'customer_address': o_address, 
+                    'customer_phone': o_phone,
+                    'courier': o_courier, 
+                    'order_status': 'PREPARING',
+                    'sandwiches': o_sandwiches, 
+                    'cakes': o_cakes, 
+                    'drinks': o_drinks
+                }
+            )
+            order_confirmation(o_name, o_id, o_date, o_sandwiches, o_cakes, o_drinks)
         
-        # Appends new order to the orders list
-        orders_list.append(
-            {
-                'order_number': o_number,
-                'order_date': o_date, 
-                'customer_name': o_name, 
-                'customer_address': o_address, 
-                'customer_phone': o_phone,
-                'courier': o_courier, 
-                'order_status': 'PREPARING',
-                'sandwiches': o_sandwiches, 
-                'cakes': o_cakes, 
-                'drinks': o_drinks
-            }
-        )
-        order_confirmation(o_name, o_number, o_date, o_sandwiches, o_cakes, o_drinks)
-        utils.return_to_menu()
+        finally:
+            utils.return_to_menu()
 
 
 ### UPDATING ORDER STATUS ###
 
 def update_status(orders_list):
-    # Gets a list of all order numbers
-    o_numbers = [order.get('order_number') for order in orders_list]
+    # Gets a list of all order ids
+    o_ids = [order.get('order_id') for order in orders_list]
     statuses = ['PREPARING', 'READY', 'OUT FOR DELIVERY', 'DELIVERED', 'COMPLETED', 'CANCELLED', 'DELAYED', 'REJECTED']
     
-    o_number = input('Enter order number to be updated (or enter 0 to cancel): ').upper()
-    if o_number == '0': # Cancels and returns user to order menu
+    o_id = input('Enter Order ID to be updated (or enter 0 to cancel): ').upper()
+    if o_id == '0': # Cancels and returns user to order menu
         utils.clear_terminal()
         utils.app_title()
         return
     
-    elif o_number not in o_numbers: # Checks if order number is valid
-        print(f'\nOrder {o_number} could not be found. Order number is either invalid or it has been deleted from our system.' )
+    elif o_id not in o_ids: # Checks if order id is valid
+        print(f'\nOrder {o_id} could not be found. Order ID is either invalid or it has been deleted from our system.' )
     
     else: # Updates order status
         print('\nStatuses:- ' + ', '.join(statuses))
@@ -174,85 +182,121 @@ def update_status(orders_list):
             o_status = input('Enter new order status: ').upper()
             
         for order in orders_list:
-            if order.get('order_number') == o_number:
+            if order.get('order_id') == o_id:
                 order['order_status'] = o_status
-                print(f'\nThe order status of {o_number} has been updated to {o_status}.')
+                print(f'\nThe order status of {o_id} has been updated to {o_status}.')
                 break
     
     utils.return_to_menu()
 
 
-# Pushes out changes requested by user (if any) to the orders list #BROKEN!
-def update_orders_list(o_number, orders_list, order_properties):
+# UPDATING ORDER DETAILS
+
+# Pushes out changes requested by user (if any) to the orders list
+def update_orders_list(o_id, orders_list, order_properties):
     update_count = 0
     for order in orders_list:
-        if order.get('order_number') == o_number: # Finds matching order number
+        if order.get('order_id') == o_id: # Finds matching order id
             for key, value in order_properties.items():
-                if value != '': # Updates fields if any changes have been requested
+                if value: # Updates fields if any changes have been requested
                     order[key] = value
                     update_count += 1
             break
         
     if update_count > 0:
-        print(f'\nOrder {o_number} has been successfully updated.')
+        print(f'\nOrder {o_id} has been successfully updated.')
     else:
-        print(f'\nYou did not make any changes to order {o_number}.')
+        print(f'\nYou did not make any changes to order {o_id}.')
 
 
-# Updates customer and courier fields for specified order #BROKEN!
-def update_order(orders_list, couriers_list):
-    # Gets a list of all order numbers
-    o_numbers = [order.get('order_number') for order in orders_list]
+# Updates customer and courier fields for specified order
+def update_order(orders_list):
+    # Gets a list of all order ids
+    o_ids = [order.get('order_id') for order in orders_list]
     
     print('-------- JAM\'S ORDER UPDATE FORM --------\n')
-    o_number = input('Enter reference number of order to be updated (or enter 0 to cancel): ').upper()
+    o_id = input('Order ID (or enter 0 to cancel): ').upper()
     
-    if o_number == '0': # Cancels and returns user to order menu
+    if o_id == '0': # Cancels and returns user to order menu
         utils.clear_terminal()
         utils.app_title()
         return
     
-    elif o_number not in o_numbers: # Checks if order number is valid
-        print(f'\nOrder {o_number} could not be found. Order number is either invalid or it has been deleted from our system.' )
+    elif o_id not in o_ids: # Checks if order id is valid
+        print(f'\nOrder {o_id} could not be found. order id is either invalid or it has been deleted from our system.' )
 
     else: # Prompts user to complete rest of order form
         print('\nComplete the fields below to update your order. Leave fields blank if no changes are required.\n')
         o_name = input('Customer\'s name: ')
         o_address = input('Customer\'s address: ')    
         o_phone = input('Customer\'s phone: ')
-        o_courier = validate_courier(couriers_list)
         
-        order_properties = {
-            'customer_name': o_name, 
-            'customer_address': o_address, 
-            'customer_phone': o_phone,
-            'courier': o_courier
-            }
+        try:
+            reload_order_screen('PREFFERED COURIER')
+            o_courier = validated_courier()
+            
+            reload_order_screen('SANDWICHES & WRAPS')
+            o_sandwiches = validated_product('sandwiches', 'sandwich')
+            reload_order_screen('CAKES & PASTRIES')
+            o_cakes = validated_product('cakes', 'cake')
+            reload_order_screen('HOT & COLD DRINKS')
+            o_drinks = validated_product('drinks', 'drink')
         
-        update_orders_list(o_number, orders_list, order_properties)
+        except:
+            pass
         
-    utils.return_to_menu()
+        else:
+            order_properties = {
+                'customer_name': o_name, 
+                'customer_address': o_address, 
+                'customer_phone': o_phone,
+                'courier': o_courier,
+                'sandwiches': o_sandwiches, 
+                'cakes': o_cakes, 
+                'drinks': o_drinks
+                }
+            
+            update_orders_list(o_id, orders_list, order_properties)
+        
+        finally:
+            utils.return_to_menu()
 
 
-# Deletes an order from the orders list
-def delete_order(orders_list):
-    # Gets a list of all order numbers
-    o_numbers = [order.get('order_number') for order in orders_list]
+# DELETING EXISTING ORDERS
+# Deletes an order from the order list
+def delete_item(item_list, item_type):
+    print(f'\n-------- DELETE AN EXISTING {item_type.upper()} --------\n')
+    shared.print_tabulated_list(item_list, item_type)
     
-    o_number = input('Enter order number to be deleted (or enter 0 to cancel): ').upper()
-    if o_number == '0': # Cancels and returns user to order menu
+    if item_type == 'order':
+        id_key = 'order_id'
+        name_key = 'order_id'
+    else:
+        id_key = 'id'
+        name_key = 'name'
+    
+    # Gets a list of all unique identifiers (order no.)
+    item_ids = [item.get(id_key) for item in item_list]
+    item_id = input(f'{item_type.capitalize()} ID (or enter 0 to cancel): ').upper()
+    
+    try:
+        item_id = int(item_id)
+    except ValueError:
+        pass
+    
+    if item_id == 0: # Cancels and returns user to app menu
         utils.clear_terminal()
         utils.app_title()
         return
     
-    elif o_number not in o_numbers: # Checks if order number is valid
-        print(f'\nOrder {o_number} could not be found. Order number is either invalid or it has been deleted from our system.' )
-    
-    else: # Deletes order
-        for order in orders_list:
-            if order.get('order_number') == o_number:
-                orders_list.remove(order)
-                print(f'\nOrder {o_number} has been deleted.')
+    elif item_id in item_ids: # Checks if item id is valid then deletes item
+        for item in item_list:
+            if item.get(id_key) == item_id:
+                item_list.remove(item)
+                print(f'\n{item[name_key]} has been deleted.')
                 break
+    
+    else:
+        print(f'\n{item_type.capitalize()} {item_id} could not be found. {item_type.capitalize()} ID is either invalid or it has been deleted from our system.' )
     
     utils.return_to_menu()

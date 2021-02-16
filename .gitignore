@@ -1,9 +1,4 @@
 .DS_Store/
-source/__pycache__/shared.cpython-39.pyc/
-source/__pycache__/actions.cpython-39.pyc/
-source/__pycache__/appmenus.cpython-39.pyc/
-source/__pycache__/data.cpython-39.pyc/
-source/__pycache__/orderMenu.cpython-39.pyc/
-source/__pycache__/pcmenus.cpython-39.pyc/
-source/__pycache__/utils.cpython-39.pyc/
-tests/__pycache__/test_appmenus.cpython-39.pyc/
+source/__pycache__/
+tests/__pycache__/
+.pytest_cache/

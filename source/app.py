@@ -1,78 +1,43 @@
 ### RUNS JAM'S CAFE APP ###
-# Jam's Cafe app v1.4
+# Jam's Cafe app v2.7
 
 # Updates in this version:
-# Menu functionality split into separate modules
-# Large, complex functions broken down into smaller components
-# All data types stored in lists of dictionaries with new keys added
-# Data persistence to/from .csv files (inc. data manipulation)
-# Lists printed in tabular format
-# Validation on product and courier selection when ordering
+# Product data combined into one db table
+# Order data migrated to new database table
 
 
-import utils, data, appmenus, ordermenu, pcmenus, shared
-from datetime import datetime
-
-
-### IMPORTING APP DATA ###
-# Gets app data from .csv files and stores as lists of dictionaries whilst app is running
-sandwiches = data.get_data_from_csv('./source/data/sandwiches.csv')
-cakes = data.get_data_from_csv('./source/data/cakes.csv')
-drinks = data.get_data_from_csv('./source/data/drinks.csv')
-couriers = data.get_data_from_csv('./source/data/couriers.csv')
-orders = data.get_data_from_csv('./source/data/orders.csv')
-
-
-# Reformats product and price data in product/orders lists
-sandwiches = data.price_to_float(sandwiches)
-cakes = data.price_to_float(cakes)
-drinks = data.price_to_float(drinks)
-orders = data.products_str_to_lst(orders)
-
-
-### SAVING DATA AND EXITING THE APP ###
-# Writes app data to .txt files and exits the app
-def exit_app():
-    global orders
-    # Reformats product data in orders list
-    orders = data.products_lst_to_str(orders)
-    
-    data.write_data_to_csv('./source/data/sandwiches.csv', sandwiches, 'sandwich')
-    data.write_data_to_csv('./source/data/cakes.csv', cakes, 'cake')
-    data.write_data_to_csv('./source/data/drinks.csv', drinks, 'drink')
-    data.write_data_to_csv('./source/data/couriers.csv', couriers, 'courier')
-    data.write_data_to_csv('./source/data/orders.csv', orders, 'order')
-    
-    utils.clear_terminal()
-    utils.app_title()
-    print('Thanks for using our app, see you again soon!\n')
-    exit()
+import utils, data, appmenus, ordermenu, couriermenu, productmenu, shared, db
 
 
 ### PRODUCT MENU NAVIGATION ###
 reload_product_menu = True # Condition on while loop that reloads product menu
 
 # Loads product menus after user selects product type
-def product_menu(product_list, product_type):
+def product_menu(db_table, product_type):
     global reload_product_menu
     
     while True: # Reloads product menu(s)
         product_menu_choice = appmenus.product_menu(product_type) # Gets user's product menu selection
         utils.clear_terminal()
         utils.app_title()
+        
         try:
             product_menu_choice = int(product_menu_choice)
+            
             if product_menu_choice == 1:
-                shared.print_item_list(product_list, product_type)
+                shared.print_db_table_with_title(product_type) #Fixed
 
             elif product_menu_choice == 2:
-                pcmenus.add_new_product(product_list, product_type)
+                # productmenu.add_new_product(db_table, product_type)
+                pass #***Need to fix!***
             
             elif product_menu_choice == 3:
-                pcmenus.update_item(product_list, product_type) #Broken
+                # productmenu.update_product(product_list, product_type)
+                pass #***Need to fix!***
             
             elif product_menu_choice == 4:
-                pcmenus.remove_item(product_list, product_type) #Broken
+                # shared.delete_item(product_list, product_type)
+                pass #***Need to fix!***
             
             elif product_menu_choice == 5:
                 break # Returns to product type menu
@@ -82,10 +47,11 @@ def product_menu(product_list, product_type):
                 break # Returns to main menu
         
             elif product_menu_choice == 0:
-                exit_app()
+                utils.exit_app()
                 
             else:
                 utils.invalid_number_error()
+                
         except ValueError:
             utils.invalid_input_error()
 
@@ -115,19 +81,19 @@ def navigate_menu():
                         product_type_choice = int(product_type_choice)
                         
                         if product_type_choice == 1:
-                            product_menu(sandwiches, 'sandwich') # Loads sandwich menu
+                            product_menu('sandwiches', 'sandwich') # Loads sandwich menu
                             
                         elif product_type_choice == 2:
-                            product_menu(cakes, 'cake') # Loads cake menu
+                            product_menu('cakes', 'cake') # Loads cake menu
                         
                         elif product_type_choice == 3:
-                            product_menu(drinks, 'drink') # Loads drink menu
+                            product_menu('drinks', 'drink') # Loads drink menu
                         
                         elif product_type_choice == 4:
                             break # Returns to main menu
                     
                         elif product_type_choice == 0:
-                            exit_app()
+                            utils.exit_app()
                             
                         else:
                             utils.invalid_number_error()
@@ -146,22 +112,25 @@ def navigate_menu():
                         courier_menu_choice = int(courier_menu_choice)
                         
                         if courier_menu_choice == 1:
-                            shared.print_item_list(couriers, 'courier')
+                            shared.print_db_table_with_title(item_type) #Fixed
                         
                         elif courier_menu_choice == 2:
-                            pcmenus.add_new_courier(couriers)
+                            # couriermenu.add_new_courier('couriers')
+                            pass #***Need to fix!***
                         
                         elif courier_menu_choice == 3:
-                            pcmenus.update_item(couriers, item_type) #Broken!
+                            # couriermenu.update_courier(couriers)
+                            pass #***Need to fix!***
                         
                         elif courier_menu_choice == 4:
-                            pcmenus.remove_item(couriers, item_type) #Broken!
+                            # shared.delete_item(couriers, item_type)
+                            pass #***Need to fix!***
                         
                         elif courier_menu_choice == 5:
                             break # Returns to main menu
                         
                         elif courier_menu_choice == 0:
-                            exit_app()
+                            utils.exit_app()
                         
                         else:
                             utils.invalid_number_error()
@@ -171,6 +140,7 @@ def navigate_menu():
             
             elif main_choice == 3: # Launches the order menu
                 while True: # Reloads order menu
+                    item_type = 'order'
                     order_menu_choice = appmenus.order_menu() # Gets user's order menu selection
                     utils.clear_terminal()
                     utils.app_title()
@@ -179,25 +149,29 @@ def navigate_menu():
                         order_menu_choice = int(order_menu_choice)
                         
                         if order_menu_choice == 1:
-                            shared.print_item_list(orders, 'order')
+                            shared.print_db_table_with_title('order') #Fixed
                         
                         elif order_menu_choice == 2:
-                            ordermenu.create_new_order(orders, couriers, sandwiches, cakes, drinks)
+                            # ordermenu.create_new_order(orders)
+                            pass #***Need to fix!***
                         
                         elif order_menu_choice == 3:
-                            ordermenu.update_status(orders)
+                            # ordermenu.update_status(orders)
+                            pass #***Need to fix!***
                         
                         elif order_menu_choice == 4:
-                            ordermenu.update_order(orders, couriers) #Broken!
+                            # ordermenu.update_order(orders)
+                            pass #***Need to fix!***
                         
                         elif order_menu_choice == 5:
-                            ordermenu.delete_order(orders)
+                            # ordermenu.delete_item(orders, 'order')
+                            pass #***Need to fix!***
                         
                         elif order_menu_choice == 6:
                             break # Returns to main menu
                         
                         elif order_menu_choice == 0:
-                            exit_app()
+                            utils.exit_app()
                             
                         else:
                             utils.invalid_number_error()
@@ -206,7 +180,7 @@ def navigate_menu():
                         utils.invalid_input_error()
             
             elif main_choice == 0:
-                exit_app()
+                utils.exit_app()
                 
             else:
                 utils.invalid_number_error()

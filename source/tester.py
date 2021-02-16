@@ -137,16 +137,51 @@ my_dict = {'order_number': 'JAM-1',
     
 #     return temp_list
 
-test_cakes = [{'name': 'Lemon drizzle cake', 'price': '2.45'}, {'name': 'Chocolate brownie', 'price': '2.25'}, {'name': "Millionaire's shortbread", 'price': '2.4'}, 
-              {'name': 'Carrot & walnut cake', 'price': '2.9'}, {'name': 'Blueberry muffin', 'price': '2.1'}, {'name': 'White chocolate cookie', 'price': '1.85'}, 
-              {'name': 'Peanut butter cookie', 'price': '1.85'}, {'name': 'Apple crumble muffin', 'price': '2.1'}, {'name': 'Fruity flapjack', 'price': '1.75'}, 
-              {'name': 'Pain au chocolat', 'price': '2.2'}, {'name': 'Pain aux raisins', 'price': '2.2'}, {'name': 'Almond croissant', 'price': '2.3'}, 
-              {'name': 'Lemon square', 'price': '2.25'}]
+# test_cakes = [{'name': 'Lemon drizzle cake', 'price': '2.45'}, {'name': 'Chocolate brownie', 'price': '2.25'}, {'name': "Millionaire's shortbread", 'price': '2.4'}, 
+#               {'name': 'Carrot & walnut cake', 'price': '2.9'}, {'name': 'Blueberry muffin', 'price': '2.1'}, {'name': 'White chocolate cookie', 'price': '1.85'}, 
+#               {'name': 'Peanut butter cookie', 'price': '1.85'}, {'name': 'Apple crumble muffin', 'price': '2.1'}, {'name': 'Fruity flapjack', 'price': '1.75'}, 
+#               {'name': 'Pain au chocolat', 'price': '2.2'}, {'name': 'Pain aux raisins', 'price': '2.2'}, {'name': 'Almond croissant', 'price': '2.3'}, 
+#               {'name': 'Lemon square', 'price': '2.25'}]
 
-# print(test_cakes)
-# print()
+# # print(test_cakes)
+# # print()
 
-price = 'two'
-price1 = float(price)
-print(type(price1))
-print(price1)
+# print(test_cakes[0]['name'])
+
+# def test_func(item_id, max_item_id):
+#     if -1 < item_id < max_item_id:
+#         print('passed')
+#     print(item_id)
+
+# test_func(2, 14)
+
+def inner_func():
+    try:
+        my_list = [1]
+        # print(my_list[2])
+        my_list = my_list + 1
+    
+    except IndexError:
+        print('index doesn\'t exist')
+        raise IndexError
+    
+    except TypeError:
+        print('you cant do that to a list')
+        raise TypeError
+
+    return 'bananas'
+
+def middle_func():
+    inner_func()
+
+def outer_func():
+    try:
+        middle_func()
+    except:
+        print('something went wrong')
+        # pass
+
+# middle_func()
+# outer_func()
+
+print(len("Flat 368, Nelson Mandela House, Peckham, MK48 3ET"))

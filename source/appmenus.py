@@ -10,8 +10,8 @@ def display_main_menu():
     print(\
 '''--------- MAIN MENU ---------\n
 What would you like to do?
-1 - View or update our product lists
-2 - View or update our courier list
+1 - View or update our products
+2 - View or update our couriers
 3 - Place or update an order
 0 - Exit app
 ''')
@@ -34,13 +34,18 @@ Which product type would you like to view/update?
 
 # Displays product menus and gets user selection
 def product_menu(product_type):
+    if product_type == 'sandwich':
+        product_type_plural = product_type + 'es'
+    else:
+        product_type_plural = product_type + 's'
+    
     print(\
 f'''--------- {product_type.upper()} MENU ---------\n
 What would you like to do?
-1 - View our {product_type} list
+1 - View all {product_type_plural}
 2 - Add a new {product_type}
-3 - Update an existing {product_type}
-4 - Remove an existing {product_type}
+3 - Update a {product_type}
+4 - Delete a {product_type}
 5 - Return to the product type menu
 6 - Return to the main menu
 0 - Exit app
@@ -53,10 +58,10 @@ def courier_menu():
     print(\
 '''--------- COURIER MENU ---------\n
 What would you like to do?
-1 - View our courier list
+1 - View all couriers
 2 - Add a new courier
-3 - Update an existing courier
-4 - Remove an existing courier
+3 - Update a courier
+4 - Delete a courier
 5 - Return to the main menu
 0 - Exit app
 ''')
