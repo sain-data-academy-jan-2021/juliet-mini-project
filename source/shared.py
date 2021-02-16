@@ -94,7 +94,7 @@ def delete_item(item_type):
         return
     
     # User selects ID of item to be deleted
-    item_id = input(f'\n{item_type.capitalize()} ID (or enter 0 to cancel): ')
+    item_id = input(f'\nEnter {item_type.capitalize()} ID to be deleted (or enter 0 to cancel): ')
     
     try:
         item_id = int(item_id)
