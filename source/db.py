@@ -1,9 +1,23 @@
-### CONNECTS TO MYSQL DATABASE AND QUERIES/UPDATES DATA ###
+### CONNECTS TO MYSQL DATABASE AND QUERIES/UPDATES TABLES ###
 
 import pymysql
 import os
 from dotenv import load_dotenv
 import utils
+
+
+# Identifies db table name for the specific item type
+def get_db_table_name(item_type):
+    if item_type in ('sandwich', 'cake', 'drink'):
+        table_name = 'products'
+    
+    elif item_type == 'courier':
+        table_name = 'couriers'
+    
+    else:
+        table_name = 'orders'
+    
+    return table_name
 
 
 ### DATABASE CONNECTIONS ###
@@ -41,7 +55,7 @@ def roll_back_changes_to_db(connection):
 # Gets data from database table and stores in a list of dictionaries
 def create_list_from_db_table(item_type, col_names, dict_keys):
     temp_list = []
-    db_table = utils.get_db_table_name(item_type)
+    db_table = get_db_table_name(item_type)
     
     try:
         cursor, connection = connect_to_db()
@@ -51,7 +65,7 @@ def create_list_from_db_table(item_type, col_names, dict_keys):
         raise ConnectionError
     
     sql = f'SELECT {col_names} FROM {db_table}'
-    if db_table == 'products':
+    if item_type in ['sandwich', 'cake', 'drink']:
         sql += f' WHERE product_type = \'{item_type}\''
     
     try:
@@ -74,8 +88,9 @@ def create_list_from_db_table(item_type, col_names, dict_keys):
 
 
 # Gets data from a specific field in the db table and stores in a list
-def get_field_from_db_table(db_table, col_name):
+def get_field_from_db_table(item_type, col_name):
     temp_list = []
+    db_table = get_db_table_name(item_type)
     
     try:
         cursor, connection = connect_to_db()
@@ -83,9 +98,13 @@ def get_field_from_db_table(db_table, col_name):
     except:
         print('\nWe\'re sorry, something\'s gone wrong. Unable to connect to the database.')
         raise ConnectionError
+    
+    sql = f'SELECT {col_name} FROM {db_table}'
+    if item_type in ['sandwich', 'cake', 'drink']:
+        sql += f' WHERE product_type = \'{item_type}\''
         
     try:
-        cursor.execute(f'SELECT {col_name} FROM {db_table}')
+        cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
             temp_list.append(row[0])
@@ -101,8 +120,9 @@ def get_field_from_db_table(db_table, col_name):
 
 
 # Gets the name of an item at specified index in the db table
-def get_item_name_from_db_table(db_table, item_id):
-    col_name = utils.get_name_col_for_item(db_table)
+def get_item_name_from_db_table(item_type, item_id):
+    db_table = get_db_table_name(item_type)
+    col_name = utils.get_name_col_for_item(item_type)
     
     try:
         cursor, connection = connect_to_db()
@@ -127,7 +147,8 @@ def get_item_name_from_db_table(db_table, item_id):
 ### UPDATING THE DB ###
 
 # Adds a new record to the specified db table
-def create_new_record(db_table, values):
+def create_new_record(item_type, values):
+    db_table = get_db_table_name(item_type)
     col_names = utils.get_col_names_for_creating(db_table)
     
     try:
@@ -148,7 +169,9 @@ def create_new_record(db_table, values):
 
 
 # Deletes a record at the specified index in the db table
-def delete_record_from_db(db_table, item_id):    
+def delete_record_from_db(item_type, item_id):
+    db_table = get_db_table_name(item_type)
+    
     try:
         cursor, connection = connect_to_db()
         

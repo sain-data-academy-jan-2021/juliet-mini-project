@@ -89,20 +89,6 @@ def exit_app():
 #     return dict_keys
 
 
-# Gets db table name for the specific item type ***GOOD TO GO!***
-def get_db_table_name(item_type):
-    if item_type in ('sandwich', 'cake', 'drink'):
-        table_name = 'products'
-    
-    elif item_type == 'courier':
-        table_name = 'couriers'
-    
-    else:
-        table_name = 'orders'
-    
-    return table_name
-
-
 # Returns the relevant list of column names in the db table, used when printing tables ***GOOD TO GO!***
 def get_col_names_for_printing(item_type):
     if item_type in ('sandwich', 'cake', 'drink'):
@@ -153,12 +139,12 @@ def str_to_lst(string):
 
 
 # Returns the relevant 'name' column for a specific table
-def get_name_col_for_item(db_table):
-    if db_table in ['sandwiches', 'cakes', 'drinks', 'couriers']:
+def get_name_col_for_item(item_type):
+    if item_type in ['sandwich', 'cake', 'drink', 'courier']:
         name_col = 'name'
     
     else:
-        name_col = 'order_id'
+        name_col = 'order_number'
     
     return name_col
 

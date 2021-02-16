@@ -83,11 +83,11 @@ def required_field(field_name, is_first_field):
 ### DELETING ITEMS FROM DB TABLES ###
 
 # Deletes the selected item from the db table
-def delete_item(db_table, item_type):
+def delete_item(item_type):
     print(f'\n-------- DELETE AN EXISTING {item_type.upper()} --------\n')
     try:
         print_db_table(item_type)
-        item_ids = db.get_field_from_db_table(db_table, 'id')
+        item_ids = db.get_field_from_db_table(item_type, 'id')
         
     except:
         utils.return_to_menu()
@@ -106,10 +106,10 @@ def delete_item(db_table, item_type):
         utils.app_title()
         return
     
-    elif item_id in item_ids: # Checks if item id is valid then deletes item
+    elif item_id in item_ids: # Checks if item id is valid then deletes item        
         try:
-            item_name = db.get_item_name_from_db_table(db_table, item_id)
-            db.delete_record_from_db(db_table, item_id)
+            item_name = db.get_item_name_from_db_table(item_type, item_id)
+            db.delete_record_from_db(item_type, item_id)
             print(f'\n{item_name} has been deleted from our database.')
             
         except:
@@ -117,7 +117,7 @@ def delete_item(db_table, item_type):
             return
     
     else:
-        print(f'\n{item_type.capitalize()} {item_id} could not be found. {item_type.capitalize()} ID is either invalid or it has been deleted from our database.' )
+        print(f'\n{item_type.capitalize()} ID {item_id} could not be found. {item_type.capitalize()} ID is either invalid or it has already been deleted from our database.' )
     
     utils.return_to_menu()
 

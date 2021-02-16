@@ -36,8 +36,7 @@ def product_menu(db_table, product_type):
                 pass #***Need to fix!***
             
             elif product_menu_choice == 4:
-                # shared.delete_item(product_list, product_type)
-                pass #***Need to fix!***
+                shared.delete_item(product_type)
             
             elif product_menu_choice == 5:
                 break # Returns to product type menu
@@ -123,8 +122,7 @@ def navigate_menu():
                             pass #***Need to fix!***
                         
                         elif courier_menu_choice == 4:
-                            # shared.delete_item(couriers, item_type)
-                            pass #***Need to fix!***
+                            shared.delete_item('courier')
                         
                         elif courier_menu_choice == 5:
                             break # Returns to main menu
@@ -164,8 +162,7 @@ def navigate_menu():
                             pass #***Need to fix!***
                         
                         elif order_menu_choice == 5:
-                            # ordermenu.delete_item(orders, 'order')
-                            pass #***Need to fix!***
+                            shared.delete_item('order')
                         
                         elif order_menu_choice == 6:
                             break # Returns to main menu
@@ -195,3 +192,5 @@ def run_app():
     navigate_menu()
 
 run_app()
+
+
