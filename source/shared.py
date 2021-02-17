@@ -5,6 +5,7 @@ import tabulate
 
 
 ### PRINTING DB TABLES ###
+# new line added here
 # Gets custom title for a printed table of products/couriers/orders ***DONE!***
 def get_item_list_title(item_type):   
     if item_type == 'sandwich':
