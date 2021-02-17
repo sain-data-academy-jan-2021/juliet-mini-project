@@ -1,16 +1,16 @@
-*** BUGS ***
+*** BUGS!! ***
 
-[FIXED] MAJOR - When the user attempts to create or update an order and the app is unable to connect to the db/access a db table, the user is not immediately returned to app menu.
-Instead, the create/update process continues.
-
-CRITICAL - Add, update and delete functionality for products, couriers & orders currently broken!!
+CRITICAL - Regression - user unable to create a new order.
+MAJOR - Regression - user unable to update a courier.
+MAJOR - Regression - user unable to update an order.
+MAJOR - Regression - user unable to update a product.
 
 MAJOR - Auto-generated order date/time values are in a different format to those in the database. Will cause errors when trying to add orders to the db table. Need to fix!
 
 MINOR - When printing tables, ugly error details are displayed in terminal if app cannot connect to the db/access the db table.
 Need to add try-except block to the 'print_db_table(item_type)' function.
 
-TRIVIAL - When the user attemps to add a new product/courier and the app is unable to connect to the db/access a db table, the user gets an error message printed above the app menu.
+MINOR - When the user attemps to add a new product/courier and the app is unable to connect to the db/access a db table, the user gets an error message printed above the app menu.
 There should be a 'Enter to continue...' message with a clean return to the app menu.
 
 TRIVIAL - User is presented with two error messages when the app is unable to query a db table during the order create/update journey.
@@ -18,9 +18,26 @@ The second error message states that the app was unable to connect to the db, wh
 
 
 
+*** BUG FIXES ***
+[FIXED] CRITICAL - Regression - user unable to add a new courier to the db table.
+[FIXED] CRITICAL - Regression - user unable to add a new product to the db table.
+[FIXED] CRITICAL - Regression - user unable to update the status of an order.
+
+[FIXED] MAJOR - Regression - user unable to delete a courier.
+[FIXED] MAJOR - Regression - user unable to delete a product.
+[FIXED] MAJOR - Regression - user unable to delete an order.
+[FIXED] MAJOR - When the user attempts to create or update an order and the app is unable to connect to the db/access a db table, the user is not immediately returned to app menu.
+Instead, the create/update process continues.
+
+[FIXED] MINOR - Table of orders is not printed to the terminal during the order status update journey.
+
+
+
 *** FEATURES WISH LIST ***
 
-[DONE] MAJOR - Combine all products into one db table with a product type category.
-MINOR - Table of orders is not printed to the terminal during the order status update journey.
-TRIVIAL - create custom error type for db functions?
-TRIVIAL - calculate total cost for orders? (Big piece of work)
+[DONE] Combine all products into one db table with a product type category.
+
+[BACKLOG] Sort items in products table by product type after new item is added? (Would ids change?)
+[BACKLOG] Split out ordered products into a separate table? (probably big piece of work)
+[BACKLOG] Calculate total cost for orders? (probably big piece of work)
+[BACKLOG] Create custom error type for db functions?

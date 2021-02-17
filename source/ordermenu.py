@@ -8,8 +8,8 @@ import utils, shared, db
 
 # Validates user's courier selection against courier list
 def validated_courier():
-    shared.print_db_table('courier')
-    courier_ids = db.get_field_from_db_table('couriers', 'id')
+    shared.print_table('courier')
+    courier_ids = db.get_single_column_from_db_table('couriers', 'id')
     courier_id = input(f'Courier ID (or press Enter to skip): ')
     
     while courier_id:
@@ -29,8 +29,8 @@ def validated_courier():
 # Validates user's product selection against product lists
 def validated_product(db_table, product_type):
     selected_products = []
-    shared.print_db_table(product_type)
-    product_ids = db.get_field_from_db_table(db_table, 'id')
+    shared.print_table(product_type)
+    product_ids = db.get_single_column_from_db_table(db_table, 'id')
     
     product_id = input(f'{product_type.capitalize()} ID (or press Enter to skip): ')
     
@@ -160,11 +160,11 @@ def create_new_order(orders_list):
 
 def update_order_status():
     statuses = ['PREPARING', 'READY', 'OUT FOR DELIVERY', 'DELIVERED', 'COMPLETED', 'CANCELLED', 'DELAYED', 'REJECTED']
-    print(f'\n-------- UPDATE ORDER STATUS --------\n')
+    print(f'-------- UPDATE ORDER STATUS --------\n')
     
     try:
-        shared.print_db_table('order')
-        order_ids = db.get_field_from_db_table('order', 'id')
+        shared.print_table('order')
+        order_ids = db.get_single_column_from_db_table('order', 'id')
         
     except:
         utils.return_to_menu()
@@ -193,7 +193,7 @@ def update_order_status():
             new_status = input('Enter new order status: ').upper()
                 
         try:
-            order_number = db.get_item_name_from_db_table('order', order_id)
+            order_number = db.get_name_of_one_item_from_db_table('order', order_id)
             new_values = f'order_status = \'{new_status}\''
             db.update_record_in_db('order', order_id, new_values)
             print(f'\nThe order status of {order_number} has been updated to {new_status}.')

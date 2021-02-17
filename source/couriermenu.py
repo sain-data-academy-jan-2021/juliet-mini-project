@@ -7,14 +7,13 @@ import utils, shared, db
 
 # Creates a new courier and adds it to the courier list
 def add_new_courier(item_type):
-    # Gets a list of all courier names
     try:
-        courier_names = db.get_field_from_db_table(item_type, 'name')
+        courier_names = db.get_single_column_from_db_table(item_type, 'name')
     except:
         utils.return_to_menu()
         return
     
-    print(f'\n-------- ADD A NEW COURIER --------\n')
+    print(f'-------- ADD A NEW COURIER --------\n')
     print('(* indicates a required field)\n')
     new_courier = shared.required_field(f'Courier name', True).capitalize()
     
@@ -28,20 +27,15 @@ def add_new_courier(item_type):
         values = f'\'{new_courier}\', \'{new_phone}\''
         
         try:
-            db.create_new_record(db_table, values)
+            db.create_new_record(item_type, values)
+            print(f'\n{new_courier} has been successfully added as a new courier.')
         
         except:
             utils.return_to_menu()
-            return            
+            return
         
-        else:
-            utils.clear_terminal()
-            utils.app_title()
-            name_col = utils.get_name_col_for_item(item_type)
-            print(f'\n{new_courier} has been set up as a new courier!')
-
     else:
-        print(f'\n{new_courier} is already one of our couriers!')
+        print(f'\n{new_courier} is already one of our couriers.')
     
     utils.return_to_menu()
 

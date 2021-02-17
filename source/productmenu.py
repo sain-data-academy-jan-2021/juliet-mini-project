@@ -6,17 +6,18 @@ import utils, shared, db
 ### CREATING NEW PRODUCTS ###
 
 # Creates a new product and adds it to the relevant product list
-def add_new_product(db_table, product_type):
+def add_new_product(item_type):
     # Gets a list of all product names (for the type)
     try:
-        product_names = db.get_field_from_db_table(db_table, 'name')
+        product_names = db.get_single_column_from_db_table(item_type, 'name')
+        
     except:
         utils.return_to_menu()
         return
     
-    print(f'\n-------- ADD A NEW {product_type.upper()} --------\n')
+    print(f'-------- ADD A NEW {item_type.upper()} --------\n')
     print('(* indicates a required field)\n')
-    new_product = shared.required_field(f'{product_type.capitalize()} name', True).capitalize()
+    new_product = shared.required_field(f'{item_type.capitalize()} name', True).capitalize()
     
     if new_product == '0': # Cancels and returns to sub-menu
         utils.clear_terminal()
@@ -29,26 +30,24 @@ def add_new_product(db_table, product_type):
             
             try:
                 new_price = round(float(new_price), 2)
-                values = f'\'{new_product}\', \'{new_price}\''
+                values = f'\'{item_type}\', \'{new_product}\', {new_price}'
+                # print(values)
                 
                 try:
-                    db.create_new_record(db_table, values)
+                    db.create_new_record(item_type, values)
+                    print(f'\n{new_product} has successfully been added to our {item_type} range.')
+                    break
                 
                 except:
-                    utils.return_to_menu()
+                    # utils.return_to_menu()
+                    print('I think there is an error somewhere...')
                     return
-                
-                else:
-                    utils.clear_terminal()
-                    utils.app_title()
-                    print(f'\n{new_product} has just been added to our {product_type} range!')
-                    break
                 
             except ValueError:
                 print(f'\nOoops! Price must be a number. Please try again.\n')
             
     else:
-        print(f'\n{new_product} is already part of our {product_type} range!')
+        print(f'\n{new_product} is already part of our {item_type} range.')
     
     utils.return_to_menu()
 

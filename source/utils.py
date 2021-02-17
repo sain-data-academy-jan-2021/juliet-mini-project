@@ -103,27 +103,27 @@ def get_col_names_for_printing(item_type):
     return col_names
 
 
-# Cleans dictionary keys (same as db table column headers) ready to be used in printed tables
-def tidy_up_col_names_for_printing(dict_keys):
-    col_headers = []
+# Reformats lists of db table column names ready to be used in printed tables
+def reformat_col_names(col_names_lst):
+    table_headers = []
     
-    if type(dict_keys) is list:
-        for i in range(len(dict_keys)):
-            col_headers.append(dict_keys[i].replace('_', ' ').title())
+    if type(col_names_lst) is list:
+        for i in range(len(col_names_lst)):
+            table_headers.append(col_names_lst[i].replace('_', ' ').title())
     
-    return col_headers
+    return table_headers
 
 
 # Returns the relevant list of column names in the db table, used when creating new items ***NEW!***
-def get_col_names_for_creating(db_table):
-    if db_table in ['sandwiches', 'cakes', 'drinks']:
-        col_names = 'name, price'
+def get_col_names_for_creating(item_type):
+    if item_type in ['sandwich', 'cake', 'drink']:
+        col_names = 'product_type, name, price'
     
-    elif db_table == 'couriers':
+    elif item_type == 'courier':
         col_names = 'name, phone'
     
     else:
-        col_names = 'order_id, order_date, customer_name, customer_address, customer_phone, courier, order_status, sandwiches, cakes, drinks'
+        col_names = 'order_number, order_date, customer_name, customer_address, customer_phone, courier, order_status, sandwiches, cakes, drinks'
     
     return col_names
 

@@ -20,6 +20,7 @@ def get_db_table_name(item_type):
     return table_name
 
 
+
 ### DATABASE CONNECTIONS ###
 
 # Connects to the MySQL DB
@@ -50,10 +51,11 @@ def roll_back_changes_to_db(connection):
     connection.close()
 
 
+
 ### FETCHING DATA FROM THE DB ###
 
-# Gets data from database table and stores in a list of dictionaries
-def create_list_from_db_table(item_type, col_names, dict_keys):
+# Gets values from multiple columns in the db table and stores in a list of dictionaries
+def get_multiple_columns_from_db_table(item_type, col_names, dict_keys):
     temp_list = []
     db_table = get_db_table_name(item_type)
     
@@ -87,8 +89,8 @@ def create_list_from_db_table(item_type, col_names, dict_keys):
     return temp_list
 
 
-# Gets data from a specific field in the db table and stores in a list
-def get_field_from_db_table(item_type, col_name):
+# Gets values from a single column in the db table and stores in a list
+def get_single_column_from_db_table(item_type, col_name):
     temp_list = []
     db_table = get_db_table_name(item_type)
     
@@ -120,7 +122,7 @@ def get_field_from_db_table(item_type, col_name):
 
 
 # Gets the name of an item at specified index in the db table
-def get_item_name_from_db_table(item_type, item_id):
+def get_name_of_one_item_from_db_table(item_type, item_id):
     db_table = get_db_table_name(item_type)
     col_name = utils.get_name_col_for_item(item_type)
     
@@ -135,7 +137,7 @@ def get_item_name_from_db_table(item_type, item_id):
         cursor.execute(f'SELECT {col_name} FROM {db_table} WHERE id = {item_id}')
         item_name = cursor.fetchone()
         disconnect_from_db(cursor, connection)
-        return ' '.join(map(str, item_name))
+        return item_name[0]
 
     except:
         roll_back_changes_to_db(connection)
@@ -161,14 +163,14 @@ def make_change_to_db_table(sql):
         
     except:
         roll_back_changes_to_db(connection)
-        print(f'\nWe\'re sorry, something\'s gone wrong. Unable to delete data from the {db_table} table.\n')
+        print(f'\nWe\'re sorry, something\'s gone wrong. Unable to execute SQL query on the database table.\n')
         raise ConnectionError
 
 
 # Adds a new record to the specified db table
 def create_new_record(item_type, values):
     db_table = get_db_table_name(item_type)
-    col_names = utils.get_col_names_for_creating(db_table)
+    col_names = utils.get_col_names_for_creating(item_type)
     sql = f'INSERT INTO {db_table} ({col_names}) VALUES ({values})'
     make_change_to_db_table(sql)
 

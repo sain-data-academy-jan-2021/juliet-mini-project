@@ -1,5 +1,5 @@
 ### RUNS JAM'S CAFE APP ###
-# Jam's Cafe app v2.9
+# Jam's Cafe app v2.91
 
 # Updates in this version:
 # Product data combined into one db table
@@ -13,7 +13,7 @@ import utils, data, appmenus, ordermenu, couriermenu, productmenu, shared, db
 reload_product_menu = True # Condition on while loop that reloads product menu
 
 # Loads product menus after user selects product type
-def product_menu(db_table, product_type):
+def product_menu(product_type):
     global reload_product_menu
     
     while True: # Reloads product menu(s)
@@ -25,11 +25,10 @@ def product_menu(db_table, product_type):
             product_menu_choice = int(product_menu_choice)
             
             if product_menu_choice == 1:
-                shared.print_db_table_with_title(product_type) #Fixed
+                shared.print_table_with_title(product_type)
 
             elif product_menu_choice == 2:
-                # productmenu.add_new_product(db_table, product_type)
-                pass #***Need to fix!***
+                productmenu.add_new_product(product_type)
             
             elif product_menu_choice == 3:
                 # productmenu.update_product(product_list, product_type)
@@ -80,13 +79,13 @@ def navigate_menu():
                         product_type_choice = int(product_type_choice)
                         
                         if product_type_choice == 1:
-                            product_menu('sandwiches', 'sandwich') # Loads sandwich menu
+                            product_menu('sandwich') # Loads sandwich menu
                             
                         elif product_type_choice == 2:
-                            product_menu('cakes', 'cake') # Loads cake menu
+                            product_menu('cake') # Loads cake menu
                         
                         elif product_type_choice == 3:
-                            product_menu('drinks', 'drink') # Loads drink menu
+                            product_menu('drink') # Loads drink menu
                         
                         elif product_type_choice == 4:
                             break # Returns to main menu
@@ -111,18 +110,17 @@ def navigate_menu():
                         courier_menu_choice = int(courier_menu_choice)
                         
                         if courier_menu_choice == 1:
-                            shared.print_db_table_with_title(item_type) #Fixed
+                            shared.print_table_with_title(item_type)
                         
                         elif courier_menu_choice == 2:
-                            # couriermenu.add_new_courier('couriers')
-                            pass #***Need to fix!***
+                            couriermenu.add_new_courier(item_type)
                         
                         elif courier_menu_choice == 3:
                             # couriermenu.update_courier(couriers)
                             pass #***Need to fix!***
                         
                         elif courier_menu_choice == 4:
-                            shared.delete_item('courier')
+                            shared.delete_item(item_type)
                         
                         elif courier_menu_choice == 5:
                             break # Returns to main menu
@@ -147,7 +145,7 @@ def navigate_menu():
                         order_menu_choice = int(order_menu_choice)
                         
                         if order_menu_choice == 1:
-                            shared.print_db_table_with_title('order')
+                            shared.print_table_with_title('order')
                         
                         elif order_menu_choice == 2:
                             # ordermenu.create_new_order(orders)
