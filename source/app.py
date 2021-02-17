@@ -1,5 +1,5 @@
 ### RUNS JAM'S CAFE APP ###
-# Jam's Cafe app v2.7
+# Jam's Cafe app v2.9
 
 # Updates in this version:
 # Product data combined into one db table
