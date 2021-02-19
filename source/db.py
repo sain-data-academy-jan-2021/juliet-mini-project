@@ -145,6 +145,28 @@ def get_name_of_one_item_from_db_table(item_type, item_id):
         raise ConnectionError
 
 
+# Finds the highest item id from the db table
+def get_highest_item_id_from_db_table(item_type):
+    db_table = get_db_table_name(item_type)
+    
+    try:
+        cursor, connection = connect_to_db()
+            
+    except:
+        print('\nWe\'re sorry, something\'s gone wrong. Unable to connect to the database.')
+        raise ConnectionError
+        
+    try:
+        cursor.execute(f'SELECT MAX(id) FROM {db_table}')
+        item_name = cursor.fetchone()
+        disconnect_from_db(cursor, connection)
+        return item_name[0]
+
+    except:
+        roll_back_changes_to_db(connection)
+        print(f'\nWe\'re sorry, something\'s gone wrong. Unable to retrieve {db_table} data from the database.\n')
+        raise ConnectionError
+
 
 ### UPDATING THE DB ###
 

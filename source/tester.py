@@ -155,33 +155,49 @@ my_dict = {'order_number': 'JAM-1',
 
 # test_func(2, 14)
 
-def inner_func():
-    try:
-        my_list = [1]
-        # print(my_list[2])
-        my_list = my_list + 1
+# def inner_func():
+#     try:
+#         my_list = [1]
+#         # print(my_list[2])
+#         my_list = my_list + 1
     
-    except IndexError:
-        print('index doesn\'t exist')
-        raise IndexError
+#     except IndexError:
+#         print('index doesn\'t exist')
+#         raise IndexError
     
-    except TypeError:
-        print('you cant do that to a list')
-        raise TypeError
+#     except TypeError:
+#         print('you cant do that to a list')
+#         raise TypeError
 
-    return 'bananas'
+#     return 'bananas'
 
-def middle_func():
-    inner_func()
+# def middle_func():
+#     inner_func()
 
-def outer_func():
-    try:
-        middle_func()
-    except:
-        print('something went wrong')
-        # pass
+# def outer_func():
+#     try:
+#         middle_func()
+#     except:
+#         print('something went wrong')
+#         # pass
 
-# middle_func()
-# outer_func()
+# # middle_func()
+# # outer_func()
 
-print(len("Flat 368, Nelson Mandela House, Peckham, MK48 3ET"))
+# print(len("Flat 368, Nelson Mandela House, Peckham, MK48 3ET"))
+
+o_courier = 1
+o_sandwiches = '3, 4, 5'
+o_cakes = ''
+o_drinks = '5'
+
+optional_fields = [o_courier, o_sandwiches, o_cakes, o_drinks]
+order_data = f'Jam-15, 27/June/20, \'PREPARING\', Pip'
+for field in optional_fields:
+    if field:
+        if type(field) is int:
+            order_data = order_data + f', {field}'
+        else:
+            order_data = order_data + f', \'{field}\''
+
+print(order_data)

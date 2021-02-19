@@ -148,8 +148,7 @@ def navigate_menu():
                             shared.print_table_with_title('order')
                         
                         elif order_menu_choice == 2:
-                            # ordermenu.create_new_order(orders)
-                            pass #***Need to fix!***
+                            ordermenu.create_new_order()
                         
                         elif order_menu_choice == 3:
                             ordermenu.update_order_status()

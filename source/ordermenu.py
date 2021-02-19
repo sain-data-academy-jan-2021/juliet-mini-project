@@ -23,14 +23,17 @@ def validated_courier():
             
         except ValueError:
             print(f'Ooops! Please select a valid Courier ID or leave blank.\n')
-            courier_id = input(f'Courier ID (or press Enter to continue): ')
+            courier_id = input(f'Courier ID (or press Enter to skip): ')
+
+    if not courier_id:
+        return 'NULL'
 
 
 # Validates user's product selection against product lists
-def validated_product(db_table, product_type):
+def validated_product(product_type):
     selected_products = []
     shared.print_table(product_type)
-    product_ids = db.get_single_column_from_db_table(db_table, 'id')
+    product_ids = db.get_single_column_from_db_table(product_type, 'id')
     
     product_id = input(f'{product_type.capitalize()} ID (or press Enter to skip): ')
     
@@ -49,7 +52,7 @@ def validated_product(db_table, product_type):
         finally:
             product_id = input(f'{product_type.capitalize()} ID (or press Enter to continue): ')
     
-    return sorted(selected_products)
+    return utils.num_lst_to_str(sorted(selected_products))
 
 
 # Validates order to check that user has added products to their order!
@@ -61,27 +64,28 @@ def empty_order_msg():
     
 
 # Generates order id and sets order date & time
-def order_autocalc(orders_list):
+def order_autocalc():
     try:
-        o_id = orders_list[-1].get('order_id', 'JAM-0')
-        o_id = 'JAM-' + str(int(o_id[4:]) + 1)
-    except IndexError:
-        o_id = 'JAM-1'
-    
+        o_number = db.get_highest_item_id_from_db_table('order') + 1
+        o_number = 'JAM-' + str(o_number)
+        
+    except TypeError:
+        o_number = 'JAM-1'
+        
     # Sets order date as current date & time
-    o_date = datetime.strftime(datetime.now(), '%d/%m/%Y %H:%M')
+    o_date = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
     
-    return o_id, o_date
+    return o_number, o_date
 
 
 # Prints order confirmation message
-def order_confirmation(o_name, o_id, o_date, o_sandwiches, o_cakes, o_drinks):
+def order_confirmation(o_name, o_number, o_date, o_sandwiches, o_cakes, o_drinks):
     utils.clear_terminal()
     utils.app_title()
     print('-------- JAM\'S ORDER CONFIRMATION --------\n')
     print(f'''Thanks for your order, {o_name}!\n
 YOUR ORDER SUMMARY
-Order ID: {o_id}
+Order Number: {o_number}
 Order date: {o_date}
 Sandwiches: {o_sandwiches}
 Cakes: {o_cakes}
@@ -90,19 +94,17 @@ Order status: PREPARING''')
 
 
 # Reloads/tidies up create order screen in between courier/product selections
-def reload_order_screen(section_heading):
+def load_order_screen(section_heading):
     utils.clear_terminal()
     utils.app_title()
-    print('\n-------- JAM\'S ORDER FORM --------\n')
+    print('-------- PLACE A NEW ORDER --------\n')
     print(f'\n{section_heading}')
+    print('(* indicates a required field)\n')
 
 
 # Creates a new order and adds it to the orders list
-def create_new_order(orders_list):
-    print('\n-------- JAM\'S ORDER FORM --------\n')
-    print('(* indicates a required field)\n')
-    
-    reload_order_screen('CUSTOMER CONTACT DETAILS')
+def create_new_order():
+    load_order_screen('CUSTOMER CONTACT DETAILS')
     o_name = shared.required_field('Customer name', True)
     if o_name == '0': # Cancels and returns to order menu
         utils.clear_terminal()
@@ -113,47 +115,31 @@ def create_new_order(orders_list):
         o_phone = shared.required_field('Customer phone', False)
         
         try:
-            reload_order_screen('PREFFERED COURIER')
+            load_order_screen('PREFFERED COURIER')
             o_courier = validated_courier()
+            load_order_screen('SANDWICHES & WRAPS')
+            o_sandwiches = validated_product('sandwich')
+            load_order_screen('CAKES & PASTRIES')
+            o_cakes = validated_product('cake')
+            load_order_screen('HOT & COLD DRINKS')
+            o_drinks = validated_product('drink')
             
-            reload_order_screen('SANDWICHES & WRAPS')
-            o_sandwiches = validated_product('sandwiches', 'sandwich')
-            reload_order_screen('CAKES & PASTRIES')
-            o_cakes = validated_product('cakes', 'cake')
-            reload_order_screen('HOT & COLD DRINKS')
-            o_drinks = validated_product('drinks', 'drink')
+            o_number, o_date = order_autocalc()
         
-        except:
-            pass
-        
-        else:
             # Order validation
             if (not o_sandwiches) and (not o_cakes) and (not o_drinks):
                 empty_order_msg()
                 return
 
-            # Generates order id and sets order date
-            o_id, o_date = order_autocalc(orders_list)
+            # Concatenates order data for use as SQL query to update the db
+            order_data = f'\'{o_number}\', \'{o_date}\', \'PREPARING\', \'{o_name}\', \'{o_address}\', \'{o_phone}\', {o_courier}, \'{o_sandwiches}\', \'{o_cakes}\', \'{o_drinks}\''
+            db.create_new_record('order', order_data)
+            order_confirmation(o_name, o_number, o_date, o_sandwiches, o_cakes, o_drinks)
             
-            # Appends new order to the orders list
-            orders_list.append(
-                {
-                    'order_id': o_id,
-                    'order_date': o_date, 
-                    'customer_name': o_name, 
-                    'customer_address': o_address, 
-                    'customer_phone': o_phone,
-                    'courier': o_courier, 
-                    'order_status': 'PREPARING',
-                    'sandwiches': o_sandwiches, 
-                    'cakes': o_cakes, 
-                    'drinks': o_drinks
-                }
-            )
-            order_confirmation(o_name, o_id, o_date, o_sandwiches, o_cakes, o_drinks)
+        except:
+            print('Unfortunately your order cannot be placed at this time. Please call us to place an order.')
         
-        finally:
-            utils.return_to_menu()
+        utils.return_to_menu()
 
 
 ### UPDATING ORDER STATUS ### ***DONE!***
@@ -208,6 +194,7 @@ def update_order_status():
     utils.return_to_menu()
 
 
+#---------- BROKEN! ----------#
 # UPDATING ORDER DETAILS
 
 # Pushes out changes requested by user (if any) to the orders list

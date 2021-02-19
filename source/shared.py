@@ -30,9 +30,9 @@ def get_item_list_title(item_type):
 
 # Gets data from the database table and prints in terminal ***DONE!***
 def print_table(item_type):
-    col_names_str = utils.get_col_names_for_printing(item_type) #comma separated string of db column names
-    col_names_lst = utils.str_to_lst(col_names_str) #converts the string of col names to a list
-    item_data = db.get_multiple_columns_from_db_table(item_type, col_names_str, col_names_lst) #gets data from db and returns a list of dicts
+    col_names_str = utils.get_col_names_for_printing(item_type)
+    col_names_lst = utils.str_to_lst(col_names_str)
+    item_data = db.get_multiple_columns_from_db_table(item_type, col_names_str, col_names_lst)
     
     if item_data:
         headers = utils.reformat_col_names(col_names_lst)

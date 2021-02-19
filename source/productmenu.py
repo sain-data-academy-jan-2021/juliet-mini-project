@@ -31,7 +31,6 @@ def add_new_product(item_type):
             try:
                 new_price = round(float(new_price), 2)
                 values = f'\'{item_type}\', \'{new_product}\', {new_price}'
-                # print(values)
                 
                 try:
                     db.create_new_record(item_type, values)
@@ -39,8 +38,6 @@ def add_new_product(item_type):
                     break
                 
                 except:
-                    # utils.return_to_menu()
-                    print('I think there is an error somewhere...')
                     return
                 
             except ValueError:

@@ -50,45 +50,6 @@ def exit_app():
     exit()
 
 
-# # Gets the relevant list of dictionary keys/field names for each item type
-# def get_field_names(item_type):
-#     if type(item_type) is str:
-#         if item_type in ['sandwich', 'cake', 'drink']:
-#             dict_keys = {
-#                             'id': 'ID',
-#                             'product_type': 'Product Type',
-#                             'name': 'Product', 
-#                             'price': 'Price'
-#                         }
-        
-#         elif item_type == 'courier':
-#             dict_keys = {
-                            
-#                             'id': 'ID',
-#                             'name': 'Courier', 
-#                             'phone': 'Phone Number'
-#                         }
-        
-#         elif item_type == 'order':
-#             dict_keys = {
-#                             'order_id': 'Order ID', 
-#                             'order_date': 'Order Date', 
-#                             'customer_name': 'Customer Name', 
-#                             'customer_address': 'Customer Address', 
-#                             'customer_phone': 'Customer Phone', 
-#                             'courier': 'Courier', 
-#                             'order_status': 'Order Status', 
-#                             'sandwiches': 'Sandwiches', 
-#                             'cakes': 'Cakes', 
-#                             'drinks': 'Drinks'
-#                         }
-
-#     else:
-#         dict_keys = {}
-        
-#     return dict_keys
-
-
 # Returns the relevant list of column names in the db table, used when printing tables ***GOOD TO GO!***
 def get_col_names_for_printing(item_type):
     if item_type in ('sandwich', 'cake', 'drink'):
@@ -123,7 +84,7 @@ def get_col_names_for_creating(item_type):
         col_names = 'name, phone'
     
     else:
-        col_names = 'order_number, order_date, customer_name, customer_address, customer_phone, courier, order_status, sandwiches, cakes, drinks'
+        col_names = 'order_number, order_date, order_status, customer_name, customer_address, customer_phone, courier, sandwiches, cakes, drinks'
     
     return col_names
 
@@ -136,6 +97,19 @@ def str_to_lst(string):
     
     else:
         return []
+
+
+# Converts list of numbers to a nicely formatted string
+def num_lst_to_str(num_lst):
+    if type(num_lst) is list and num_lst:
+        for i in range(len(num_lst)):
+            num_lst[i] = str(num_lst[i])
+        
+        num_str = ', '.join(num_lst)
+        return num_str
+    
+    else:
+        return ''
 
 
 # Returns the relevant 'name' column for a specific table

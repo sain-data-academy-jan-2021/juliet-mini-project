@@ -1,36 +1,31 @@
 *** BUGS!! ***
 
-CRITICAL - Regression - user unable to create a new order.
 MAJOR - Regression - user unable to update a courier.
 MAJOR - Regression - user unable to update an order.
 MAJOR - Regression - user unable to update a product.
 
-MAJOR - Auto-generated order date/time values are in a different format to those in the database. Will cause errors when trying to add orders to the db table. Need to fix!
-
-MINOR - When printing tables, ugly error details are displayed in terminal if app cannot connect to the db/access the db table.
-Need to add try-except block to the 'print_db_table(item_type)' function.
-
-MINOR - When the user attemps to add a new product/courier and the app is unable to connect to the db/access a db table, the user gets an error message printed above the app menu.
-There should be a 'Enter to continue...' message with a clean return to the app menu.
-
-TRIVIAL - User is presented with two error messages when the app is unable to query a db table during the order create/update journey.
-The second error message states that the app was unable to connect to the db, which is incorrect. (Think the bug is in the nested try except blocks.)
-
+MINOR - When printing tables from the 'view' option, ugly error details are displayed in terminal if app cannot connect to the db/access the db table.
 
 
 *** BUG FIXES ***
 [FIXED] CRITICAL - Regression - user unable to add a new courier to the db table.
 [FIXED] CRITICAL - Regression - user unable to add a new product to the db table.
 [FIXED] CRITICAL - Regression - user unable to update the status of an order.
+[FIXED] CRITICAL - Regression - user unable to create a new order.
 
 [FIXED] MAJOR - Regression - user unable to delete a courier.
 [FIXED] MAJOR - Regression - user unable to delete a product.
 [FIXED] MAJOR - Regression - user unable to delete an order.
 [FIXED] MAJOR - When the user attempts to create or update an order and the app is unable to connect to the db/access a db table, the user is not immediately returned to app menu.
 Instead, the create/update process continues.
+[FIXED] MAJOR - Auto-generated order date/time values are in a different format to those in the database. Will cause errors when trying to add orders to the db table. Need to fix!
 
 [FIXED] MINOR - Table of orders is not printed to the terminal during the order status update journey.
+[FIXED] MINOR - When the user attemps to add a new product/courier and the app is unable to connect to the db/access a db table, the user gets an error message printed above the app menu.
+There should be a 'Enter to continue...' message with a clean return to the app menu.
 
+[FIXED] TRIVIAL - User is presented with two error messages when the app is unable to query a db table during the order create/update journey.
+The second error message states that the app was unable to connect to the db, which is incorrect. (Think the bug is in the nested try except blocks.)
 
 
 *** FEATURES WISH LIST ***
