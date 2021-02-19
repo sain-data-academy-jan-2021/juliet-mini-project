@@ -23,7 +23,7 @@ def add_new_courier(item_type):
         return
     
     elif not new_courier in courier_names:
-        new_phone = shared.required_field('Phone', False).capitalize()
+        new_phone = shared.required_field('Phone', False)
         values = f'\'{new_courier}\', \'{new_phone}\''
         
         try:
@@ -40,15 +40,19 @@ def add_new_courier(item_type):
     utils.return_to_menu()
 
 
-# ---------------------- BROKEN STUFF ---------------------------------------- #
 
 ### UPDATING EXISTING COURIERS ###
 
-# Updates an existing person on the courier list
-def update_courier(courier_list):
-    print(f'\n-------- UPDATE AN EXISTING COURIER --------\n')
-    shared.print_tabulated_list(courier_list, 'courier')
-    courier_ids = [courier.get('id') for courier in courier_list]
+# Updates a record within the couriers db table
+def update_courier(item_type):
+    print(f'-------- UPDATE AN EXISTING COURIER --------\n')
+    try:
+        shared.print_table(item_type)
+        courier_ids = db.get_single_column_from_db_table(item_type, 'id')
+    except:
+        utils.return_to_menu()
+        return
+    
     courier_id = input('\nCourier ID (or enter 0 to cancel): ')
     
     try:
@@ -63,17 +67,30 @@ def update_courier(courier_list):
     
     # Updates product if it exists on the list
     elif courier_id in courier_ids:
-        courier_name = input('Name: ')
-        courier_phone = input('Phone: ')
+        courier_name = input('Updated courier name (or press Enter to skip): ').capitalize()
+        courier_phone = input('Updated phone (or press Enter to skip): ')
                 
-        courier_properties = {
+        user_input = {
             'name': courier_name, 
             'phone': courier_phone
             }
         
-        shared.update_item_list(courier_id, courier_list, 'courier', courier_properties)
-    
+        try:
+            item_name = db.get_name_of_one_item_from_db_table(item_type, courier_id)
+            values_to_update = shared.concat_values_to_update(user_input, item_name)
+            
+            if values_to_update:
+                db.update_record_in_db(item_type, courier_id, values_to_update)
+                print(f'\nThe courier record for {item_name} has been successfully updated.')
+            else:
+                print(f'\nYou did not make any changes to the courier record for {item_name}.')
+            
+        except:
+            utils.return_to_menu()
+            return
+        
     else:
         print(f'\nCourier {courier_id} could not be found as the Courier ID is invalid.')
     
     utils.return_to_menu()
+

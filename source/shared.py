@@ -113,26 +113,26 @@ def delete_item(item_type):
 
 
 
-
-
-#-------------BROKEN STUFF------------------------#
-
 ### UPDATING ITEMS ON LISTS ###
 
-# Pushes out changes requested by user (if any) to the product/courier list
-def update_item_list(item_id, item_list, item_type, item_properties):
+# Constructs the values part of the sql query for updating db record (dictionary input)
+def concat_values_to_update(user_input, item_name):
     update_count = 0
+    temp_str = ''
     
-    for key, value in item_properties.items():
+    for field, value in user_input.items():
         if value: # Updates fields if any changes have been requested
-            for item in item_list:
-                if item['id'] == item_id:
-                    item[key] = value
-                    update_count += 1
-                    item_name = item['name']
-                    break
-        
-    if update_count > 0:
-        print(f'\n{item_name} has been successfully updated.')
-    else:
-        print(f'\nYou did not make any changes to {item_type.capitalize()} {item_id}.')
+            if update_count > 0:
+                temp_str += ', '
+            
+            if type(value) is (int or float):
+                temp_str += f'{field} = {value}'
+            else:
+                temp_str += f'{field} = \'{value}\''
+                
+            update_count += 1
+    
+    return temp_str
+
+
+# print(concat_values_to_update({'name': 'Jules', 'number': 2}, 'Juliet'))

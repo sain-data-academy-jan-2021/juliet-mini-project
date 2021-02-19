@@ -6,10 +6,10 @@ import utils, shared, db
 
 ### CREATING NEW ORDERS ###
 
-# Validates user's courier selection against courier list
+# Validates user's courier selection against courier db table
 def validated_courier():
     shared.print_table('courier')
-    courier_ids = db.get_single_column_from_db_table('couriers', 'id')
+    courier_ids = db.get_single_column_from_db_table('courier', 'id')
     courier_id = input(f'Courier ID (or press Enter to skip): ')
     
     while courier_id:

@@ -52,41 +52,6 @@ def add_new_product(item_type):
 
 # ---------------------- BROKEN STUFF ---------------------------------------- #
 
-# # Creates a new product and adds it to the relevant product list
-# def add_new_product(product_list, product_type):
-#     product_names = [product.get('name') for product in product_list]
-    
-#     print(f'\n-------- ADD A NEW {product_type.upper()} --------\n')
-#     print('(* indicates a required field)\n')
-#     new_product = shared.required_field(f'New {product_type} name', True).capitalize()
-    
-#     if new_product == '0': # Cancels and returns to sub-menu
-#         utils.clear_terminal()
-#         utils.app_title()
-#         return
-    
-#     elif not new_product in product_names:
-#         while True:
-#             new_price = input('Price: ')
-            
-#             try:
-#                 new_price = round(float(new_price), 2)
-#                 product_list.append({
-#                                         'name': new_product,
-#                                         'price': new_price
-#                                     })
-#                 print(f'\n{new_product} has just been added to the {product_type} list!')
-#                 break
-            
-#             except ValueError:
-#                 print(f'Ooops! Price must be a number. Please try again.')
-            
-#     else:
-#         print(f'\n{new_product} is already on the {product_type} list!')
-    
-#     utils.return_to_menu()
-
-
 ### UPDATING EXISTING PRODUCTS ###
 
 # Updates an existing item on the product list
