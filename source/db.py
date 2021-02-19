@@ -209,10 +209,3 @@ def update_record_in_db(item_type, item_id, new_values):
     db_table = get_db_table_name(item_type)
     sql = f'UPDATE {db_table} SET {new_values} WHERE id = {item_id}'
     make_change_to_db_table(sql)
-
-
-
-# How to do multiple column value changes in one SQL query
-# UPDATE newpurchase 
-# SET receive_qty=20, pub_lang='Hindi', receive_dt='2008-07-10' 
-# WHERE purch_price > 50;

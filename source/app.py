@@ -1,12 +1,12 @@
 ### RUNS JAM'S CAFE APP ###
-# Jam's Cafe app v2.92
+# Jam's Cafe app v2.93
 
 # Updates in this version:
 # Product data combined into one db table
 # Order data migrated to new database table
 
 
-import utils, data, appmenus, ordermenu, couriers, productmenu, shared, db
+import utils, data, appmenus, ordermenu, couriers, products, shared, db
 
 
 ### PRODUCT MENU NAVIGATION ###
@@ -28,11 +28,10 @@ def product_menu(product_type):
                 shared.print_table_with_title(product_type)
 
             elif product_menu_choice == 2:
-                productmenu.add_new_product(product_type)
+                products.add_new_product(product_type)
             
             elif product_menu_choice == 3:
-                # productmenu.update_product(product_list, product_type)
-                pass #***Need to fix!***
+                products.update_product(product_type)
             
             elif product_menu_choice == 4:
                 shared.delete_item(product_type)

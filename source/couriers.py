@@ -5,7 +5,7 @@ import utils, shared, db
 
 ### CREATING NEW COURIERS ###
 
-# Creates a new courier and adds it to the courier list
+# Creates a new record in the couriers db table
 def add_new_courier(item_type):
     try:
         courier_names = db.get_single_column_from_db_table(item_type, 'name')
@@ -53,7 +53,7 @@ def update_courier(item_type):
         utils.return_to_menu()
         return
     
-    courier_id = input('\nCourier ID (or enter 0 to cancel): ')
+    courier_id = input('\nCourier ID (enter 0 to cancel): ')
     
     try:
         courier_id = int(courier_id)
@@ -65,10 +65,10 @@ def update_courier(item_type):
         utils.app_title()
         return
     
-    # Updates product if it exists on the list
+    # Updates product if it exists within the db table
     elif courier_id in courier_ids:
-        courier_name = input('Updated courier name (or press Enter to skip): ').capitalize()
-        courier_phone = input('Updated phone (or press Enter to skip): ')
+        courier_name = input('Updated courier name (press Enter to skip): ').capitalize()
+        courier_phone = input('Updated phone (press Enter to skip): ')
                 
         user_input = {
             'name': courier_name, 

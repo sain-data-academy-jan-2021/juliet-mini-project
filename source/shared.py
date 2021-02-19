@@ -58,7 +58,7 @@ def print_table_with_title(item_type):
 def required_field(field_name, is_first_field):
     
     if is_first_field:
-        o_field = input(f'* {field_name} (or enter 0 to cancel): ')  
+        o_field = input(f'* {field_name} (enter 0 to cancel): ')  
     else:
         o_field = input(f'* {field_name}: ')
     
@@ -121,7 +121,7 @@ def concat_values_to_update(user_input, item_name):
     temp_str = ''
     
     for field, value in user_input.items():
-        if value: # Updates fields if any changes have been requested
+        if value: # Concatenates fields & values if any changes have been requested
             if update_count > 0:
                 temp_str += ', '
             
@@ -133,6 +133,3 @@ def concat_values_to_update(user_input, item_name):
             update_count += 1
     
     return temp_str
-
-
-# print(concat_values_to_update({'name': 'Jules', 'number': 2}, 'Juliet'))

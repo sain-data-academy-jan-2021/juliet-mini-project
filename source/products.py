@@ -5,7 +5,7 @@ import utils, shared, db
 
 ### CREATING NEW PRODUCTS ###
 
-# Creates a new product and adds it to the relevant product list
+# Creates a new record in the products db table
 def add_new_product(item_type):
     # Gets a list of all product names (for the type)
     try:
@@ -50,16 +50,19 @@ def add_new_product(item_type):
 
 
 
-# ---------------------- BROKEN STUFF ---------------------------------------- #
-
 ### UPDATING EXISTING PRODUCTS ###
 
-# Updates an existing item on the product list
-def update_product(product_list, product_type):
-    print(f'\n-------- UPDATE AN EXISTING {product_type.upper()} --------\n')
-    shared.print_tabulated_list(product_list, product_type)
-    product_ids = [product.get('id') for product in product_list]
-    product_id = input(f'\n{product_type.capitalize()} ID (or enter 0 to cancel): ')
+# Updates a record within the products db table
+def update_product(item_type):
+    print(f'-------- UPDATE AN EXISTING {item_type.upper()} --------\n')
+    try:
+        shared.print_table(item_type)
+        product_ids = db.get_single_column_from_db_table(item_type, 'id')
+    except:
+        utils.return_to_menu()
+        return
+    
+    product_id = input(f'\n{item_type.capitalize()} ID (enter 0 to cancel): ')
     
     try:
         product_id = int(product_id)
@@ -71,25 +74,40 @@ def update_product(product_list, product_type):
         utils.app_title()
         return
     
-    elif product_id in product_ids: # Updates product if it exists on the list
-        product_name = input('Name: ')
-        product_price = input('Price: ')
+    # Updates product if it exists within the db table
+    elif product_id in product_ids:
+        product_name = input('Updated name (press Enter to skip): ').capitalize()
+        product_price = input('Updated price (press Enter to skip): ')
+        
+        user_input = {
+            'name': product_name, 
+            'price': product_price
+            }
         
         try:
             if product_price:
                 product_price = round(float(product_price), 2)
-                
-            product_properties = {
-                'name': product_name, 
-                'price': product_price
-                }
-        
-            shared.update_item_list(product_id, product_list, product_type, product_properties)
-        
+            
         except ValueError:
-            print(f'\n{product_type.capitalize()} {product_id} could not be updated as Price must be a number.')
+            print('\nThe selected product could not be updated as Price must be a number.')
+            utils.return_to_menu()
+            return
+            
+        try:
+            item_name = db.get_name_of_one_item_from_db_table(item_type, product_id)
+            values_to_update = shared.concat_values_to_update(user_input, item_name)
+            
+            if values_to_update:
+                db.update_record_in_db(item_type, product_id, values_to_update)
+                print(f'\nThe product details for {item_name} have been successfully updated.')
+            else:
+                print(f'\nYou did not make any changes to the product details for {item_name}.')
+            
+        except:
+            utils.return_to_menu()
+            return
     
     else:
-        print(f'\n{product_type.capitalize()} {product_id} could not be found as the {product_type.capitalize()} ID is invalid.')
+        print(f'\n{item_type.capitalize()} {product_id} could not be found as the {item_type.capitalize()} ID is invalid.')
     
     utils.return_to_menu()
