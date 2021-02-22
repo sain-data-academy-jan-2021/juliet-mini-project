@@ -201,4 +201,3 @@ for field in optional_fields:
             order_data = order_data + f', \'{field}\''
 
 print(order_data)
-print('hello')
