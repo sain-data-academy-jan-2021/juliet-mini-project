@@ -1,6 +1,7 @@
 ### COURIER MENU FUNCTIONALITY ###
 
 import utils, shared, db
+from appmenu import display_courier_menu
 
 
 ### CREATING NEW COURIERS ###
@@ -95,3 +96,41 @@ def update_courier(item_type):
     
     utils.return_to_menu()
 
+
+
+### APP MENU ###
+
+# Loads courier menu within the app
+def load_courier_menu():
+    while True:
+        item_type = 'courier'
+        menu_choice = display_courier_menu() # Gets user's menu option selection
+        utils.clear_terminal()
+        utils.app_title()
+        
+        try:
+            menu_choice = int(menu_choice)
+            
+            if menu_choice == 1:
+                shared.print_table_with_title(item_type)
+            
+            elif menu_choice == 2:
+                add_new_courier(item_type)
+            
+            elif menu_choice == 3:
+                update_courier(item_type)
+            
+            elif menu_choice == 4:
+                shared.delete_item(item_type)
+            
+            elif menu_choice == 5:
+                break # Returns to main menu
+            
+            elif menu_choice == 0:
+                utils.exit_app()
+            
+            else:
+                utils.invalid_number_error()
+            
+        except ValueError:
+            utils.invalid_input_error()

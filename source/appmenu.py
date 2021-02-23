@@ -19,7 +19,7 @@ What would you like to do?
 
 
 # Displays product type menu and gets user selection
-def product_type_menu():
+def display_product_type_menu():
     print(\
 f'''--------- PRODUCT TYPE MENU ---------\n
 Which product type would you like to view/update?
@@ -33,7 +33,7 @@ Which product type would you like to view/update?
 
 
 # Displays product menus and gets user selection
-def product_menu(product_type):
+def display_product_menu(product_type):
     if product_type == 'sandwich':
         product_type_plural = product_type + 'es'
     else:
@@ -54,7 +54,7 @@ What would you like to do?
 
 
 # Displays courier menu and gets user selection
-def courier_menu():
+def display_courier_menu():
     print(\
 '''--------- COURIER MENU ---------\n
 What would you like to do?
@@ -69,7 +69,7 @@ What would you like to do?
 
 
 # Displays order menu and gets user selection
-def order_menu():
+def display_order_menu():
     print(\
 '''--------- ORDER MENU ---------\n
 What would you like to do?

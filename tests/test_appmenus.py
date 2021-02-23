@@ -1,6 +1,6 @@
-from source.appmenus import get_option
+from source.appmenu import get_option
 
-# To run this unit test: HOLBMAC1004:miniproject juliet.hartwell$ python -m unittest tests.test_appmenus
+# To run this unit test: HOLBMAC1004:miniproject juliet.hartwell$ python -m unittest tests.test_appmenu
 
 ### TEST CASES FOR get_option()
 

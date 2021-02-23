@@ -2,6 +2,7 @@
 
 from datetime import datetime
 import utils, shared, db
+from appmenu import display_order_menu
 
 
 ### CREATING NEW ORDERS ###
@@ -162,6 +163,7 @@ def create_new_order():
         utils.return_to_menu()
 
 
+
 ### UPDATING ORDER STATUS ###
 
 def update_order_status():
@@ -215,7 +217,7 @@ def update_order_status():
 
 
 
-# UPDATING ORDER DETAILS
+### UPDATING ORDER DETAILS ###
 
 # Updates customer and courier fields for specified order
 def update_order(item_type):
@@ -282,3 +284,45 @@ def update_order(item_type):
         print(f'\nOrder {order_id} could not be found. Order ID is either invalid or it has been deleted from our system.' )
     
     utils.return_to_menu()
+
+
+
+### APP MENU ###
+
+# Loads order menu within the app
+def load_order_menu():
+    while True:
+        item_type = 'order'
+        menu_choice = display_order_menu() # Gets user's menu option selection
+        utils.clear_terminal()
+        utils.app_title()
+        
+        try:
+            menu_choice = int(menu_choice)
+            
+            if menu_choice == 1:
+                shared.print_table_with_title(item_type)
+            
+            elif menu_choice == 2:
+                create_new_order()
+            
+            elif menu_choice == 3:
+                update_order_status()
+            
+            elif menu_choice == 4:
+                update_order(item_type)
+            
+            elif menu_choice == 5:
+                shared.delete_item(item_type)
+            
+            elif menu_choice == 6:
+                break # Returns to main menu
+            
+            elif menu_choice == 0:
+                utils.exit_app()
+                
+            else:
+                utils.invalid_number_error()
+        
+        except ValueError:
+            utils.invalid_input_error()

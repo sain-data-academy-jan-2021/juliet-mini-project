@@ -88,7 +88,6 @@ def get_multiple_columns_from_db_table(item_type, col_names, dict_keys):
     
     return temp_list
 
-get_multiple_columns_from_db_table('courier', 'col_names', 'dict_keys')
 
 # Gets values from a single column in the db table and stores in a list
 def get_single_column_from_db_table(item_type, col_name):
@@ -167,6 +166,7 @@ def get_highest_item_id_from_db_table(item_type):
         roll_back_changes_to_db(connection)
         print(f'\nWe\'re sorry, something\'s gone wrong. Unable to retrieve {db_table} data from the database.\n')
         raise ConnectionError
+
 
 
 ### UPDATING THE DB ###
