@@ -202,7 +202,7 @@ my_dict = {'order_number': 'JAM-1',
 
 # print(order_data)
 
-if 0:
-    print('truthy')
-else:
-    print('falsy')
+# if 0:
+#     print('truthy')
+# else:
+#     print('falsy')
