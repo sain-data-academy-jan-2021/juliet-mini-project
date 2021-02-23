@@ -186,18 +186,23 @@ my_dict = {'order_number': 'JAM-1',
 
 # print(len("Flat 368, Nelson Mandela House, Peckham, MK48 3ET"))
 
-o_courier = 1
-o_sandwiches = '3, 4, 5'
-o_cakes = ''
-o_drinks = '5'
+# o_courier = 1
+# o_sandwiches = '3, 4, 5'
+# o_cakes = ''
+# o_drinks = '5'
 
-optional_fields = [o_courier, o_sandwiches, o_cakes, o_drinks]
-order_data = f'Jam-15, 27/June/20, \'PREPARING\', Pip'
-for field in optional_fields:
-    if field:
-        if type(field) is int:
-            order_data = order_data + f', {field}'
-        else:
-            order_data = order_data + f', \'{field}\''
+# optional_fields = [o_courier, o_sandwiches, o_cakes, o_drinks]
+# order_data = f'Jam-15, 27/June/20, \'PREPARING\', Pip'
+# for field in optional_fields:
+#     if field:
+#         if type(field) is int:
+#             order_data = order_data + f', {field}'
+#         else:
+#             order_data = order_data + f', \'{field}\''
 
-print(order_data)
+# print(order_data)
+
+if 0:
+    print('truthy')
+else:
+    print('falsy')

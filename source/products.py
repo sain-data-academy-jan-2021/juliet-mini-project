@@ -62,7 +62,7 @@ def update_product(item_type):
         utils.return_to_menu()
         return
     
-    product_id = input(f'\n{item_type.capitalize()} ID (enter 0 to cancel): ')
+    product_id = input(f'{item_type.capitalize()} ID (enter 0 to cancel): ')
     
     try:
         product_id = int(product_id)
@@ -76,8 +76,9 @@ def update_product(item_type):
     
     # Updates product if it exists within the db table
     elif product_id in product_ids:
-        product_name = input('Updated name (press Enter to skip): ').capitalize()
-        product_price = input('Updated price (press Enter to skip): ')
+        print('\nComplete the fields below to update product details. Leave fields blank if no changes are required.\n')
+        product_name = input('Name: ').capitalize()
+        product_price = input('Price: ')
         
         user_input = {
             'name': product_name, 

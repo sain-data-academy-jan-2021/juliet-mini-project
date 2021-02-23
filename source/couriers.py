@@ -53,7 +53,7 @@ def update_courier(item_type):
         utils.return_to_menu()
         return
     
-    courier_id = input('\nCourier ID (enter 0 to cancel): ')
+    courier_id = input('Courier ID (enter 0 to cancel): ')
     
     try:
         courier_id = int(courier_id)
@@ -67,8 +67,9 @@ def update_courier(item_type):
     
     # Updates product if it exists within the db table
     elif courier_id in courier_ids:
-        courier_name = input('Updated courier name (press Enter to skip): ').capitalize()
-        courier_phone = input('Updated phone (press Enter to skip): ')
+        print('\nComplete the fields below to update courier details. Leave fields blank if no changes are required.\n')
+        courier_name = input('Courier name: ').capitalize()
+        courier_phone = input('Phone: ')
                 
         user_input = {
             'name': courier_name, 

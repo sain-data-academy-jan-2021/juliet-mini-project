@@ -38,6 +38,7 @@ def print_table(item_type):
         headers = utils.reformat_col_names(col_names_lst)
         values = [item.values() for item in item_data]
         print(tabulate.tabulate(values, headers, tablefmt = 'psql', floatfmt = '.2f'))
+        print()
         
     else:
         print('There is no currently no {item_type} data in our database.')
@@ -121,12 +122,16 @@ def concat_values_to_update(user_input, item_name):
     temp_str = ''
     
     for field, value in user_input.items():
-        if value: # Concatenates fields & values if any changes have been requested
+        if value and value!= 'NULL': # Concatenates fields & values if any changes have been requested
             if update_count > 0:
                 temp_str += ', '
             
             if type(value) is (int or float):
                 temp_str += f'{field} = {value}'
+                
+            elif value == '0':
+                temp_str += f'{field} = NULL'
+            
             else:
                 temp_str += f'{field} = \'{value}\''
                 

@@ -1,8 +1,7 @@
 *** BUGS!! ***
 
-MAJOR - Regression - user unable to update an order.
-
 MINOR - When printing tables from the 'view' option, ugly error details are displayed in terminal if app cannot connect to the db/access the db table.
+MINOR - Newly created orders have a varchar value of NULL rather than actual NULL in the db table.
 
 
 *** BUG FIXES ***
@@ -19,6 +18,8 @@ Instead, the create/update process continues pointlessly.
 [FIXED] MAJOR - Auto-generated order date/time values are in a different format to those in the database. Will cause errors when trying to add orders to the db table. Need to fix!
 [FIXED] MAJOR - Regression - user unable to update a courier.
 [FIXED] MAJOR - Regression - user unable to update a product.
+[FIXED] MAJOR - Regression - user unable to update an order.
+[FIXED] MAJOR - User unable to delete a product selection from an existing order.
 
 [FIXED] MINOR - Table of orders is not printed to the terminal during the order status update journey.
 [FIXED] MINOR - When the user attemps to add a new product/courier and the app is unable to connect to the db/access a db table, the user gets an error message printed above the app menu.

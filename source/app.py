@@ -6,7 +6,7 @@
 # Order data migrated to new database table
 
 
-import utils, data, appmenus, ordermenu, couriers, products, shared, db
+import utils, data, appmenus, orders, couriers, products, shared, db
 
 
 ### PRODUCT MENU NAVIGATION ###
@@ -146,14 +146,13 @@ def navigate_menu():
                             shared.print_table_with_title('order')
                         
                         elif order_menu_choice == 2:
-                            ordermenu.create_new_order()
+                            orders.create_new_order()
                         
                         elif order_menu_choice == 3:
-                            ordermenu.update_order_status()
+                            orders.update_order_status()
                         
                         elif order_menu_choice == 4:
-                            # ordermenu.update_order(orders)
-                            pass #***Need to fix!***
+                            orders.update_order('order')
                         
                         elif order_menu_choice == 5:
                             shared.delete_item('order')
@@ -186,4 +185,3 @@ def run_app():
     navigate_menu()
 
 run_app()
-
