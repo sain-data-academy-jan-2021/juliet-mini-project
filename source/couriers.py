@@ -7,13 +7,13 @@ import utils, shared, db
 
 # Creates a new record in the couriers db table
 def add_new_courier(item_type):
+    print(f'-------- ADD A NEW COURIER --------\n')
     try:
         courier_names = db.get_single_column_from_db_table(item_type, 'name')
     except:
         utils.return_to_menu()
         return
     
-    print(f'-------- ADD A NEW COURIER --------\n')
     print('(* indicates a required field)\n')
     new_courier = shared.required_field(f'Courier name', True).capitalize()
     
@@ -45,7 +45,7 @@ def add_new_courier(item_type):
 
 # Updates a record within the couriers db table
 def update_courier(item_type):
-    print(f'-------- UPDATE AN EXISTING COURIER --------\n')
+    print(f'-------- UPDATE A COURIER --------\n')
     try:
         shared.print_table(item_type)
         courier_ids = db.get_single_column_from_db_table(item_type, 'id')

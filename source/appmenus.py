@@ -76,7 +76,7 @@ What would you like to do?
 1 - View all orders
 2 - Place a new order
 3 - Update status of an order
-4 - Update an order
+4 - Update details of an order
 5 - Delete an order
 6 - Return to the main menu
 0 - Exit app

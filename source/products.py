@@ -7,7 +7,7 @@ import utils, shared, db
 
 # Creates a new record in the products db table
 def add_new_product(item_type):
-    # Gets a list of all product names (for the type)
+    print(f'-------- ADD A NEW {item_type.upper()} --------\n')
     try:
         product_names = db.get_single_column_from_db_table(item_type, 'name')
         
@@ -15,7 +15,6 @@ def add_new_product(item_type):
         utils.return_to_menu()
         return
     
-    print(f'-------- ADD A NEW {item_type.upper()} --------\n')
     print('(* indicates a required field)\n')
     new_product = shared.required_field(f'{item_type.capitalize()} name', True).capitalize()
     
@@ -54,7 +53,7 @@ def add_new_product(item_type):
 
 # Updates a record within the products db table
 def update_product(item_type):
-    print(f'-------- UPDATE AN EXISTING {item_type.upper()} --------\n')
+    print(f'-------- UPDATE A {item_type.upper()} --------\n')
     try:
         shared.print_table(item_type)
         product_ids = db.get_single_column_from_db_table(item_type, 'id')

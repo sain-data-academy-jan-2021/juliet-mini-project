@@ -88,6 +88,7 @@ def get_multiple_columns_from_db_table(item_type, col_names, dict_keys):
     
     return temp_list
 
+get_multiple_columns_from_db_table('courier', 'col_names', 'dict_keys')
 
 # Gets values from a single column in the db table and stores in a list
 def get_single_column_from_db_table(item_type, col_name):

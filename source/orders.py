@@ -152,6 +152,7 @@ def create_new_order():
 
             # Concatenates order data for use as SQL query to update the db
             order_data = f'\'{order_number}\', \'{order_date}\', \'PREPARING\', \'{order_name}\', \'{order_address}\', \'{order_phone}\', {order_courier}, \'{order_sandwiches}\', \'{order_cakes}\', \'{order_drinks}\''
+            order_data = order_data.replace('\'NULL\'', 'NULL')
             db.create_new_record('order', order_data)
             order_confirmation(order_name, order_number, order_date, order_courier, order_sandwiches, order_cakes, order_drinks)
             

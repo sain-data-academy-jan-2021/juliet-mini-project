@@ -48,7 +48,13 @@ def print_table(item_type):
 def print_table_with_title(item_type):
     title = get_item_list_title(item_type)
     print(f'{title.upper()}\n')
-    print_table(item_type)
+    
+    try:
+        print_table(item_type)
+        
+    except:
+        pass
+    
     utils.return_to_menu()
 
 
