@@ -50,7 +50,7 @@ def exit_app():
     exit()
 
 
-# Returns the relevant list of column names in the db table, used when printing tables ***GOOD TO GO!***
+# Returns the relevant list of column names in the db table, used when printing tables
 def get_col_names_for_printing(item_type):
     if item_type in ('sandwich', 'cake', 'drink'):
         col_names = 'id, name, price'
@@ -75,7 +75,7 @@ def reformat_col_names(col_names_lst):
     return table_headers
 
 
-# Returns the relevant list of column names in the db table, used when creating new items ***NEW!***
+# Returns the relevant list of column names in the db table, used when creating new items
 def get_col_names_for_creating(item_type):
     if item_type in ['sandwich', 'cake', 'drink']:
         col_names = 'product_type, name, price'
@@ -89,7 +89,18 @@ def get_col_names_for_creating(item_type):
     return col_names
 
 
-# Converts comma-separated string to a list ***GOOD TO GO!***
+# Returns the relevant 'name' column for a specific table
+def get_name_col_for_item(item_type):
+    if item_type in ['sandwich', 'cake', 'drink', 'courier']:
+        name_col = 'name'
+    
+    else:
+        name_col = 'order_number'
+    
+    return name_col
+
+
+# Converts comma-separated string to a list
 def str_to_lst(string):
     if type(string) is str and string:
         str_list = string.split(', ')
@@ -110,16 +121,3 @@ def num_lst_to_str(num_lst):
     
     else:
         return ''
-
-
-# Returns the relevant 'name' column for a specific table
-def get_name_col_for_item(item_type):
-    if item_type in ['sandwich', 'cake', 'drink', 'courier']:
-        name_col = 'name'
-    
-    else:
-        name_col = 'order_number'
-    
-    return name_col
-
-

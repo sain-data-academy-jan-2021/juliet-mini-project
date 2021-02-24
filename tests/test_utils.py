@@ -2,7 +2,6 @@
 
 import unittest
 from source.utils import *
-# from unittest.mock import patch
 
 class TestUtils(unittest.TestCase):
     
@@ -380,21 +379,98 @@ class TestUtils(unittest.TestCase):
     # Tests for num_lst_to_str(num_lst)
     def test_num_lst_to_str_with_list_of_nums(self):
         # Assemble
-        num_lst = [1, 2, 3]
-        expected = '1, 2, 3'
+        num_lst1 = [1, 2, 3]
+        num_lst2 = [1]
+        expected1 = '1, 2, 3'
+        expected2 = '1'
+        
+        # Act
+        result1 = num_lst_to_str(num_lst1)
+        result2 = num_lst_to_str(num_lst2)
+        
+        # Assert
+        self.assertEqual(result1, expected1)
+        self.assertEqual(result2, expected2)
+
+
+    def test_num_lst_to_str_with_empty_list(self):
+        # Assemble
+        num_lst = []
+        expected = ''
         
         # Act
         result = num_lst_to_str(num_lst)
         
         # Assert
         self.assertEqual(result, expected)
+    
+    
+    def test_num_lst_to_str_with_list_of_other_data_types(self):
+        # Assemble
+        num_lst1 = ['1', '2', '3']
+        num_lst2 = ['one', 'two', 'three']
+        num_lst3 = [True, False]
+        num_lst4 = [[1], [2]]
+        num_lst5 = [1.5, 2.6]
+        
+        expected1 = '1, 2, 3'
+        expected2 = 'one, two, three'
+        expected3 = 'True, False'
+        expected4 = '[1], [2]'
+        expected5 = '1.5, 2.6'
+        
+        # Act
+        result1 = num_lst_to_str(num_lst1)
+        result2 = num_lst_to_str(num_lst2)
+        result3 = num_lst_to_str(num_lst3)
+        result4 = num_lst_to_str(num_lst4)
+        result5 = num_lst_to_str(num_lst5)
+        
+        # Assert
+        self.assertEqual(result1, expected1)
+        self.assertEqual(result2, expected2)
+        self.assertEqual(result3, expected3)
+        self.assertEqual(result4, expected4)
+        self.assertEqual(result5, expected5)
+    
+    
+    def test_num_lst_to_str_with_other_data_types(self):
+        # Assemble
+        num_lst1 = '1, 2, 3'
+        num_lst2 = False
+        num_lst3 = {1: 'one'}
+        num_lst4 = 1
+        num_lst5 = 1.5
+        expected = ''
+        
+        # Act
+        result1 = num_lst_to_str(num_lst1)
+        result2 = num_lst_to_str(num_lst2)
+        result3 = num_lst_to_str(num_lst3)
+        result4 = num_lst_to_str(num_lst4)
+        result5 = num_lst_to_str(num_lst5)
+        
+        # Assert
+        self.assertEqual(result1, expected)
+        self.assertEqual(result2, expected)
+        self.assertEqual(result3, expected)
+        self.assertEqual(result4, expected)
+        self.assertEqual(result5, expected)
+    
+    
+    def test_num_lst_to_str_with_incorrect_num_of_args(self):
+        # Assemble
+        num_lst1 = [1, 2]
+        num_lst2 = [2, 2]
+        expected = TypeError
+        
+        # Act & Assert
+        with self.assertRaises(TypeError):
+            num_lst_to_str()
+        
+        with self.assertRaises(TypeError):
+            num_lst_to_str(num_lst1, num_lst2)
 
-    # empty list as argument
-    # list of other data types as argument
-    # other data types as argument
-    # no/2 arguments
 
-
-# Using this means you can run the tests just by running the file in the normal way from the terminal
 if __name__ == '__main__':
     unittest.main()
