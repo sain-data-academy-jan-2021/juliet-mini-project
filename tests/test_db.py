@@ -1,4 +1,5 @@
-# # To run this unit test: python -m unittest tests.test_db
+# To run ALL unit tests: python -m unittest discover .
+# To run this test suite: python -m unittest tests.test_db
 
 # import unittest
 # from source.db import *

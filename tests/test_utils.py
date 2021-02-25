@@ -1,4 +1,5 @@
-# To run this unit test: python -m unittest tests.test_utils 
+# To run ALL unit tests: python -m unittest discover .
+# To run this test suite: python -m unittest tests.test_utils 
 
 import unittest
 from source.utils import *
