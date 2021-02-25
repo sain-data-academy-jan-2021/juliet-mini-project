@@ -1,6 +1,6 @@
 ### LIST ACTIONS - PRINT, CREATE, UPDATE AND DELETE ###
 
-import utils, db
+import utils, database
 import tabulate
 
 
@@ -32,7 +32,7 @@ def get_item_list_title(item_type):
 def print_table(item_type):
     col_names_str = utils.get_col_names_for_printing(item_type)
     col_names_lst = utils.str_to_lst(col_names_str)
-    item_data = db.get_multiple_columns_from_db_table(item_type, col_names_str, col_names_lst)
+    item_data = database.get_multiple_columns_from_db_table(item_type, col_names_str, col_names_lst)
     
     if item_data:
         headers = utils.reformat_col_names(col_names_lst)
@@ -84,7 +84,7 @@ def delete_item(item_type):
     print(f'-------- DELETE AN EXISTING {item_type.upper()} --------\n')
     try:
         print_table(item_type)
-        item_ids = db.get_single_column_from_db_table(item_type, 'id')
+        item_ids = database.get_single_column_from_db_table(item_type, 'id')
         
     except:
         utils.return_to_menu()
@@ -105,8 +105,8 @@ def delete_item(item_type):
     
     elif item_id in item_ids: # Checks if item id is valid then deletes item        
         try:
-            item_name = db.get_name_of_one_item_from_db_table(item_type, item_id)
-            db.delete_record_from_db(item_type, item_id)
+            item_name = database.get_name_of_one_item_from_db_table(item_type, item_id)
+            database.delete_record_from_db(item_type, item_id)
             print(f'\n{item_name} has been deleted from our database.')
             
         except:

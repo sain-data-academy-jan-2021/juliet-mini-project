@@ -1,5 +1,5 @@
 # To run ALL unit tests: python -m unittest discover .
-# To run this test suite: python -m unittest tests.test_appmenu
+# To run this test suite: python -m unittest test.test_appmenu
 
 import unittest
 from source.appmenu import get_option

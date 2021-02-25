@@ -3,7 +3,7 @@
 import pymysql
 import os
 from dotenv import load_dotenv
-import utils
+from utils import *
 
 
 # Identifies db table name for the specific item type
@@ -124,7 +124,7 @@ def get_single_column_from_db_table(item_type, col_name):
 # Gets the name of an item at specified index in the db table
 def get_name_of_one_item_from_db_table(item_type, item_id):
     db_table = get_db_table_name(item_type)
-    col_name = utils.get_name_col_for_item(item_type)
+    col_name = get_name_col_for_item(item_type)
     
     try:
         cursor, connection = connect_to_db()
@@ -193,7 +193,7 @@ def make_change_to_db_table(sql):
 # Adds a new record to the specified db table
 def create_new_record(item_type, values):
     db_table = get_db_table_name(item_type)
-    col_names = utils.get_col_names_for_creating(item_type)
+    col_names = get_col_names_for_creating(item_type)
     sql = f'INSERT INTO {db_table} ({col_names}) VALUES ({values})'
     make_change_to_db_table(sql)
 

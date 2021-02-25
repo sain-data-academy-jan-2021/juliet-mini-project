@@ -1,6 +1,6 @@
 ### COURIER MENU FUNCTIONALITY ###
 
-import utils, shared, db
+import utils, shared, database
 from appmenu import display_courier_menu
 
 
@@ -10,7 +10,7 @@ from appmenu import display_courier_menu
 def add_new_courier(item_type):
     print(f'-------- ADD A NEW COURIER --------\n')
     try:
-        courier_names = db.get_single_column_from_db_table(item_type, 'name')
+        courier_names = database.get_single_column_from_db_table(item_type, 'name')
     except:
         utils.return_to_menu()
         return
@@ -28,7 +28,7 @@ def add_new_courier(item_type):
         values = f'\'{new_courier}\', \'{new_phone}\''
         
         try:
-            db.create_new_record(item_type, values)
+            database.create_new_record(item_type, values)
             print(f'\n{new_courier} has been successfully added as a new courier.')
         
         except:
@@ -49,7 +49,7 @@ def update_courier(item_type):
     print(f'-------- UPDATE A COURIER --------\n')
     try:
         shared.print_table(item_type)
-        courier_ids = db.get_single_column_from_db_table(item_type, 'id')
+        courier_ids = database.get_single_column_from_db_table(item_type, 'id')
     except:
         utils.return_to_menu()
         return
@@ -78,11 +78,11 @@ def update_courier(item_type):
             }
         
         try:
-            item_name = db.get_name_of_one_item_from_db_table(item_type, courier_id)
+            item_name = database.get_name_of_one_item_from_db_table(item_type, courier_id)
             values_to_update = shared.concat_values_to_update(user_input, item_name)
             
             if values_to_update:
-                db.update_record_in_db(item_type, courier_id, values_to_update)
+                database.update_record_in_db(item_type, courier_id, values_to_update)
                 print(f'\nThe courier record for {item_name} has been successfully updated.')
             else:
                 print(f'\nYou did not make any changes to the courier record for {item_name}.')

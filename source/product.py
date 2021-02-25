@@ -1,6 +1,6 @@
 ### PRODUCT MENU FUNCTIONALITY ###
 
-import utils, shared, db
+import utils, shared, database
 from appmenu import display_product_menu, display_product_type_menu
 
 
@@ -10,7 +10,7 @@ from appmenu import display_product_menu, display_product_type_menu
 def add_new_product(item_type):
     print(f'-------- ADD A NEW {item_type.upper()} --------\n')
     try:
-        product_names = db.get_single_column_from_db_table(item_type, 'name')
+        product_names = database.get_single_column_from_db_table(item_type, 'name')
         
     except:
         utils.return_to_menu()
@@ -33,7 +33,7 @@ def add_new_product(item_type):
                 values = f'\'{item_type}\', \'{new_product}\', {new_price}'
                 
                 try:
-                    db.create_new_record(item_type, values)
+                    database.create_new_record(item_type, values)
                     print(f'\n{new_product} has successfully been added to our {item_type} range.')
                     break
                 
@@ -57,7 +57,7 @@ def update_product(item_type):
     print(f'-------- UPDATE A {item_type.upper()} --------\n')
     try:
         shared.print_table(item_type)
-        product_ids = db.get_single_column_from_db_table(item_type, 'id')
+        product_ids = database.get_single_column_from_db_table(item_type, 'id')
     except:
         utils.return_to_menu()
         return
@@ -95,11 +95,11 @@ def update_product(item_type):
             return
             
         try:
-            item_name = db.get_name_of_one_item_from_db_table(item_type, product_id)
+            item_name = database.get_name_of_one_item_from_db_table(item_type, product_id)
             values_to_update = shared.concat_values_to_update(user_input, item_name)
             
             if values_to_update:
-                db.update_record_in_db(item_type, product_id, values_to_update)
+                database.update_record_in_db(item_type, product_id, values_to_update)
                 print(f'\nThe product details for {item_name} have been successfully updated.')
             else:
                 print(f'\nYou did not make any changes to the product details for {item_name}.')

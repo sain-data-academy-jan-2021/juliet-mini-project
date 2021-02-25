@@ -1,7 +1,7 @@
 ### ORDER MENU FUNCTIONALITY ###
 
 from datetime import datetime
-import utils, shared, db
+import utils, shared, database
 from appmenu import display_order_menu
 
 
@@ -10,7 +10,7 @@ from appmenu import display_order_menu
 # Validates user's courier selection against couriers db table
 def validated_courier():
     shared.print_table('courier')
-    courier_ids = db.get_single_column_from_db_table('courier', 'id')
+    courier_ids = database.get_single_column_from_db_table('courier', 'id')
     courier_id = input(f'Courier ID (or press Enter to skip): ')
     
     while courier_id:
@@ -34,7 +34,7 @@ def validated_courier():
 def validated_product(product_type, state = 'create'):
     selected_products = []
     shared.print_table(product_type)
-    product_ids = db.get_single_column_from_db_table(product_type, 'id')
+    product_ids = database.get_single_column_from_db_table(product_type, 'id')
     
     if state == 'create':
         product_id = input(f'{product_type.capitalize()} ID (or press Enter to skip): ')
@@ -78,7 +78,7 @@ def empty_order_msg():
 # Generates order id and sets order date & time
 def order_autocalc():
     try:
-        order_number = db.get_highest_item_id_from_db_table('order') + 1
+        order_number = database.get_highest_item_id_from_db_table('order') + 1
         order_number = 'JAM-' + str(order_number)
         
     except TypeError:
@@ -154,7 +154,7 @@ def create_new_order():
             # Concatenates order data for use as SQL query to update the db
             order_data = f'\'{order_number}\', \'{order_date}\', \'PREPARING\', \'{order_name}\', \'{order_address}\', \'{order_phone}\', {order_courier}, \'{order_sandwiches}\', \'{order_cakes}\', \'{order_drinks}\''
             order_data = order_data.replace('\'NULL\'', 'NULL')
-            db.create_new_record('order', order_data)
+            database.create_new_record('order', order_data)
             order_confirmation(order_name, order_number, order_date, order_courier, order_sandwiches, order_cakes, order_drinks)
             
         except:
@@ -172,7 +172,7 @@ def update_order_status():
     
     try:
         shared.print_table('order')
-        order_ids = db.get_single_column_from_db_table('order', 'id')
+        order_ids = database.get_single_column_from_db_table('order', 'id')
         
     except:
         utils.return_to_menu()
@@ -201,9 +201,9 @@ def update_order_status():
             new_status = input('Enter new order status: ').upper()
                 
         try:
-            order_number = db.get_name_of_one_item_from_db_table('order', order_id)
+            order_number = database.get_name_of_one_item_from_db_table('order', order_id)
             new_values = f'order_status = \'{new_status}\''
-            db.update_record_in_db('order', order_id, new_values)
+            database.update_record_in_db('order', order_id, new_values)
             print(f'\nThe order status of {order_number} has been updated to {new_status}.')
             
         except:
@@ -224,7 +224,7 @@ def update_order(item_type):
     print('-------- UPDATE ORDER DETAILS --------\n')
     try:
         shared.print_table(item_type)
-        order_ids = db.get_single_column_from_db_table(item_type, 'id')
+        order_ids = database.get_single_column_from_db_table(item_type, 'id')
     except:
         utils.return_to_menu()
         return
@@ -267,11 +267,11 @@ def update_order(item_type):
                 'drinks': order_drinks
                 }
                         
-            order_number = db.get_name_of_one_item_from_db_table(item_type, order_id)
+            order_number = database.get_name_of_one_item_from_db_table(item_type, order_id)
             values_to_update = shared.concat_values_to_update(user_input, order_number)
             
             if values_to_update:
-                db.update_record_in_db(item_type, order_id, values_to_update)
+                database.update_record_in_db(item_type, order_id, values_to_update)
                 print(f'\nOrder {order_number} has been successfully updated.')
             
             else:
