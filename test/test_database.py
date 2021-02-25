@@ -84,7 +84,6 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(result3, expected)
         self.assertEqual(result4, expected)
     
-    
 
 if __name__ == '__main__':
     unittest.main()
