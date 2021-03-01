@@ -1,16 +1,23 @@
 ### ORDER MENU FUNCTIONALITY ###
 
 from datetime import datetime
-import utils, shared, database
-from appmenu import display_order_menu
+# from utils import *
+# from shared import *
+# from database import *
+# from appmenu import display_order_menu
+
+from source.utils import *
+from source.shared import *
+from source.database import *
+from source.appmenu import *
 
 
 ### CREATING NEW ORDERS ###
 
 # Validates user's courier selection against couriers db table
 def validated_courier():
-    shared.print_table('courier')
-    courier_ids = database.get_single_column_from_db_table('courier', 'id')
+    print_table('courier')
+    courier_ids = get_single_column_from_db_table('courier', 'id')
     courier_id = input(f'Courier ID (or press Enter to skip): ')
     
     while courier_id:
@@ -19,6 +26,7 @@ def validated_courier():
             
             if not courier_id in courier_ids:
                 print(f'Ooops! Please select a valid Courier ID or leave blank.\n')
+                courier_id = input(f'Courier ID (or press Enter to skip): ')
             else:
                 return courier_id
             
@@ -28,13 +36,13 @@ def validated_courier():
 
     if not courier_id:
         return 'NULL'
-
+    
 
 # Validates user's product selection against products db table
 def validated_product(product_type, state = 'create'):
     selected_products = []
-    shared.print_table(product_type)
-    product_ids = database.get_single_column_from_db_table(product_type, 'id')
+    print_table(product_type)
+    product_ids = get_single_column_from_db_table(product_type, 'id')
     
     if state == 'create':
         product_id = input(f'{product_type.capitalize()} ID (or press Enter to skip): ')
@@ -56,6 +64,7 @@ def validated_product(product_type, state = 'create'):
             
             elif not product_id in product_ids:
                 print(f'Ooops! Please select a valid {product_type.capitalize()} ID or leave blank.\n')
+                
             else:
                 selected_products.append(product_id)
             
@@ -64,21 +73,21 @@ def validated_product(product_type, state = 'create'):
 
         product_id = input(f'{product_type.capitalize()} ID (or press Enter to continue): ')
     
-    return utils.num_lst_to_str(sorted(selected_products))
+    return num_lst_to_str(sorted(selected_products))
 
 
 # Validates order to check that user has added products to their order
 def empty_order_msg():
-    utils.clear_terminal()
-    utils.app_title()
+    clear_terminal()
+    app_title()
     print('We\'re sorry. Your order could not be placed as you didn\'t select any products.')
-    utils.return_to_menu()
+    return_to_menu()
     
 
 # Generates order id and sets order date & time
 def order_autocalc():
     try:
-        order_number = database.get_highest_item_id_from_db_table('order') + 1
+        order_number = get_highest_item_id_from_db_table('order') + 1
         order_number = 'JAM-' + str(order_number)
         
     except TypeError:
@@ -92,8 +101,8 @@ def order_autocalc():
 
 # Prints order confirmation message
 def order_confirmation(order_name, order_number, order_date, order_courier, order_sandwiches, order_cakes, order_drinks):
-    utils.clear_terminal()
-    utils.app_title()
+    clear_terminal()
+    app_title()
     print('-------- JAM\'S ORDER CONFIRMATION --------\n')
     print(f'''Thanks for your order, {order_name}!\n
 YOUR ORDER SUMMARY
@@ -108,8 +117,8 @@ Order status: PREPARING''')
 
 # Reloads/tidies up create order screen in between courier/product selections
 def load_order_screen(section_heading, state = 'create'):
-    utils.clear_terminal()
-    utils.app_title()
+    clear_terminal()
+    app_title()
     
     if state == 'create':
         print('-------- PLACE A NEW ORDER --------\n')
@@ -125,14 +134,14 @@ def load_order_screen(section_heading, state = 'create'):
 # Creates a new order and adds it to the orders list
 def create_new_order():
     load_order_screen('CUSTOMER CONTACT DETAILS')
-    order_name = shared.required_field('Customer name', True)
+    order_name = required_field('Customer name', True)
     if order_name == '0': # Cancels and returns to order menu
-        utils.clear_terminal()
-        utils.app_title()
+        clear_terminal()
+        app_title()
     
     else: # Prompts user to complete rest of order form & validates courier/product selection
-        order_phone = shared.required_field('Customer phone', False)
-        order_address = shared.required_field('Customer address', False)
+        order_phone = required_field('Customer phone', False)
+        order_address = required_field('Customer address', False)
         
         try:
             load_order_screen('PREFFERED COURIER')
@@ -154,13 +163,13 @@ def create_new_order():
             # Concatenates order data for use as SQL query to update the db
             order_data = f'\'{order_number}\', \'{order_date}\', \'PREPARING\', \'{order_name}\', \'{order_address}\', \'{order_phone}\', {order_courier}, \'{order_sandwiches}\', \'{order_cakes}\', \'{order_drinks}\''
             order_data = order_data.replace('\'NULL\'', 'NULL')
-            database.create_new_record('order', order_data)
+            create_new_record('order', order_data)
             order_confirmation(order_name, order_number, order_date, order_courier, order_sandwiches, order_cakes, order_drinks)
             
         except:
             print('Unfortunately your order cannot be placed at this time. Please call us to place an order.')
         
-        utils.return_to_menu()
+        return_to_menu()
 
 
 
@@ -171,11 +180,11 @@ def update_order_status():
     print(f'-------- UPDATE ORDER STATUS --------\n')
     
     try:
-        shared.print_table('order')
-        order_ids = database.get_single_column_from_db_table('order', 'id')
+        print_table('order')
+        order_ids = get_single_column_from_db_table('order', 'id')
         
     except:
-        utils.return_to_menu()
+        return_to_menu()
         return
     
     # User selects ID of item to be updated
@@ -187,8 +196,8 @@ def update_order_status():
         pass
     
     if order_id == 0: # Cancels and returns user to order menu
-        utils.clear_terminal()
-        utils.app_title()
+        clear_terminal()
+        app_title()
         return
 
     elif order_id in order_ids: # Checks if order id is valid then updates status       
@@ -201,19 +210,19 @@ def update_order_status():
             new_status = input('Enter new order status: ').upper()
                 
         try:
-            order_number = database.get_name_of_one_item_from_db_table('order', order_id)
+            order_number = get_name_of_one_item_from_db_table('order', order_id)
             new_values = f'order_status = \'{new_status}\''
-            database.update_record_in_db('order', order_id, new_values)
+            update_record_in_db('order', order_id, new_values)
             print(f'\nThe order status of {order_number} has been updated to {new_status}.')
             
         except:
-            utils.return_to_menu()
+            return_to_menu()
             return
     
     else:
-        print(f'\nOrder ID {order_id} could not be found. Order ID is either invalid or it has been deleted from our database.' )
+        print(f'\nOrder ID {order_id} could not be found. Order ID is either invalid or it has been deleted from our ' )
     
-    utils.return_to_menu()
+    return_to_menu()
 
 
 
@@ -223,10 +232,10 @@ def update_order_status():
 def update_order(item_type):
     print('-------- UPDATE ORDER DETAILS --------\n')
     try:
-        shared.print_table(item_type)
-        order_ids = database.get_single_column_from_db_table(item_type, 'id')
+        print_table(item_type)
+        order_ids = get_single_column_from_db_table(item_type, 'id')
     except:
-        utils.return_to_menu()
+        return_to_menu()
         return
     
     order_id = input('Order ID (or enter 0 to cancel): ')
@@ -237,8 +246,8 @@ def update_order(item_type):
         pass
     
     if order_id == 0: # Cancels and returns user to order menu
-        utils.clear_terminal()
-        utils.app_title()
+        clear_terminal()
+        app_title()
         return
     
     elif order_id in order_ids:
@@ -267,11 +276,11 @@ def update_order(item_type):
                 'drinks': order_drinks
                 }
                         
-            order_number = database.get_name_of_one_item_from_db_table(item_type, order_id)
-            values_to_update = shared.concat_values_to_update(user_input, order_number)
+            order_number = get_name_of_one_item_from_db_table(item_type, order_id)
+            values_to_update = concat_values_to_update(user_input, order_number)
             
             if values_to_update:
-                database.update_record_in_db(item_type, order_id, values_to_update)
+                update_record_in_db(item_type, order_id, values_to_update)
                 print(f'\nOrder {order_number} has been successfully updated.')
             
             else:
@@ -283,7 +292,7 @@ def update_order(item_type):
     else:
         print(f'\nOrder {order_id} could not be found. Order ID is either invalid or it has been deleted from our system.' )
     
-    utils.return_to_menu()
+    return_to_menu()
 
 
 
@@ -294,14 +303,14 @@ def load_order_menu():
     while True:
         item_type = 'order'
         menu_choice = display_order_menu() # Gets user's menu option selection
-        utils.clear_terminal()
-        utils.app_title()
+        clear_terminal()
+        app_title()
         
         try:
             menu_choice = int(menu_choice)
             
             if menu_choice == 1:
-                shared.print_table_with_title(item_type)
+                print_table_with_title(item_type)
             
             elif menu_choice == 2:
                 create_new_order()
@@ -313,16 +322,16 @@ def load_order_menu():
                 update_order(item_type)
             
             elif menu_choice == 5:
-                shared.delete_item(item_type)
+                delete_item(item_type)
             
             elif menu_choice == 6:
                 break # Returns to main menu
             
             elif menu_choice == 0:
-                utils.exit_app()
+                exit_app()
                 
             else:
-                utils.invalid_number_error()
+                invalid_number_error()
         
         except ValueError:
-            utils.invalid_input_error()
+            invalid_input_error()

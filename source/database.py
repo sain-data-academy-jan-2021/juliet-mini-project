@@ -4,33 +4,8 @@ import pymysql
 import os
 from dotenv import load_dotenv
 # from utils import *
+from source.utils import *
 
-
-# -----COPIED FROM UTILS TO PREVENT IMPORT ISSUES WITH UNIT TESTS ------#
-
-# Returns the relevant list of column names in the db table, used when creating new items
-def get_col_names_for_creating(item_type):
-    if item_type in ['sandwich', 'cake', 'drink']:
-        col_names = 'product_type, name, price'
-    
-    elif item_type == 'courier':
-        col_names = 'name, phone'
-    
-    else:
-        col_names = 'order_number, order_date, order_status, customer_name, customer_address, customer_phone, courier, sandwiches, cakes, drinks'
-    
-    return col_names
-
-# Returns the relevant 'name' column for a specific table
-def get_name_col_for_item(item_type):
-    if item_type in ['sandwich', 'cake', 'drink', 'courier']:
-        name_col = 'name'
-    
-    else:
-        name_col = 'order_number'
-    
-    return name_col
-# -------------------------------------------------------------------#
 
 # Identifies db table name for the specific item type
 def get_db_table_name(item_type):
