@@ -3,6 +3,7 @@
 import pymysql
 import os
 from dotenv import load_dotenv
+
 # from utils import *
 from source.utils import *
 
@@ -161,7 +162,11 @@ def get_highest_item_id_from_db_table(item_type):
         cursor.execute(f'SELECT MAX(id) FROM {db_table}')
         item_name = cursor.fetchone()
         disconnect_from_db(cursor, connection)
-        return item_name[0]
+        
+        if item_name[0]:
+            return item_name[0]
+        else:
+            return 0
 
     except:
         roll_back_changes_to_db(connection)

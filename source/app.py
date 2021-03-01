@@ -1,17 +1,17 @@
 ### RUNS JAM'S CAFE APP ###
 # Jam's Cafe app v2.95
 
-from utils import *
-from appmenu import display_main_menu
-from courier import load_courier_menu
-from order import load_order_menu
-from product import load_product_type_menu
+# from utils import *
+# from appmenu import display_main_menu
+# from courier import load_courier_menu
+# from order import load_order_menu
+# from product import load_product_type_menu
 
-# from source.utils import *
-# from source.appmenu import display_main_menu
-# from source.courier import load_courier_menu
-# from source.order import load_order_menu
-# from source.product import load_product_type_menu
+from source.utils import *
+from source.appmenu import display_main_menu
+from source.courier import load_courier_menu
+from source.order import load_order_menu
+from source.product import load_product_type_menu
 
 
 welcome()
