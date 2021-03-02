@@ -1,14 +1,11 @@
 ### LIST ACTIONS - PRINT, CREATE, UPDATE AND DELETE ###
 
-# from utils import *
-# from database import *
-from source.utils import *
-from source.database import *
+import utils, database
 import tabulate
 
 
 ### PRINTING TABLES OF ITEMS ###
-# Gets custom title for a printed table of products/couriers/orders ***DONE!***
+# Gets custom title for a printed table of products/couriers/orders
 def get_item_list_title(item_type):
     if item_type == 'sandwich':
         header = 'sandwiches & wraps'
@@ -31,14 +28,14 @@ def get_item_list_title(item_type):
     return header
     
 
-# Gets data from the database table and prints in terminal ***DONE!***
+# Gets data from the database table and prints in terminal
 def print_table(item_type):
-    col_names_str = get_col_names_for_printing(item_type)
-    col_names_lst = str_to_lst(col_names_str)
-    item_data = get_multiple_columns_from_db_table(item_type, col_names_str, col_names_lst)
+    col_names_str = utils.get_col_names_for_printing(item_type)
+    col_names_lst = utils.str_to_lst(col_names_str)
+    item_data = database.get_multiple_columns_from_db_table(item_type, col_names_str, col_names_lst)
     
     if item_data:
-        headers = reformat_col_names(col_names_lst)
+        headers = utils.reformat_col_names(col_names_lst)
         values = [item.values() for item in item_data]
         print(tabulate.tabulate(values, headers, tablefmt = 'psql', floatfmt = '.2f'))
         print()
@@ -58,7 +55,7 @@ def print_table_with_title(item_type):
     except:
         pass
     
-    return_to_menu()
+    utils.return_to_menu()
 
 
 
@@ -87,10 +84,10 @@ def delete_item(item_type):
     print(f'-------- DELETE AN EXISTING {item_type.upper()} --------\n')
     try:
         print_table(item_type)
-        item_ids = get_single_column_from_db_table(item_type, 'id')
+        item_ids = database.get_single_column_from_db_table(item_type, 'id')
         
     except:
-        return_to_menu()
+        utils.return_to_menu()
         return
     
     # User selects ID of item to be deleted
@@ -102,24 +99,24 @@ def delete_item(item_type):
         pass
     
     if item_id == 0: # Cancels and returns user to app menu
-        clear_terminal()
-        app_title()
+        utils.clear_terminal()
+        utils.app_title()
         return
     
     elif item_id in item_ids: # Checks if item id is valid then deletes item        
         try:
-            item_name = get_name_of_one_item_from_db_table(item_type, item_id)
-            delete_record_from_db(item_type, item_id)
-            print(f'\n{item_name} has been deleted from our ')
+            item_name = database.get_name_of_one_item_from_db_table(item_type, item_id)
+            database.delete_record_from_db(item_type, item_id)
+            print(f'\n{item_name} has been deleted from our database.')
             
         except:
-            return_to_menu()
+            utils.return_to_menu()
             return
     
     else:
         print(f'\n{item_type.capitalize()} ID {item_id} could not be found. {item_type.capitalize()} ID is either invalid or it has already been deleted from our database.' )
     
-    return_to_menu()
+    utils.return_to_menu()
 
 
 
