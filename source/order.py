@@ -131,6 +131,20 @@ def load_order_screen(section_heading, state = 'create'):
     print('(* indicates a required field)\n')
 
 
+# Gets courier and product selection from user and validates user input
+def get_courier_and_product_selection():
+    load_order_screen('PREFFERED COURIER')
+    order_courier = validated_courier()
+    load_order_screen('SANDWICHES & WRAPS')
+    order_sandwiches = validated_product('sandwich')
+    load_order_screen('CAKES & PASTRIES')
+    order_cakes = validated_product('cake')
+    load_order_screen('HOT & COLD DRINKS')
+    order_drinks = validated_product('drink')
+    
+    return order_courier, order_sandwiches, order_cakes, order_drinks
+
+
 # Creates a new order and adds it to the orders list
 def create_new_order():
     load_order_screen('CUSTOMER CONTACT DETAILS')
@@ -144,23 +158,15 @@ def create_new_order():
         order_address = required_field('Customer address', False)
         
         try:
-            load_order_screen('PREFFERED COURIER')
-            order_courier = validated_courier()
-            load_order_screen('SANDWICHES & WRAPS')
-            order_sandwiches = validated_product('sandwich')
-            load_order_screen('CAKES & PASTRIES')
-            order_cakes = validated_product('cake')
-            load_order_screen('HOT & COLD DRINKS')
-            order_drinks = validated_product('drink')
-            
-            order_number, order_date = order_autocalc()
+            order_courier, order_sandwiches, order_cakes, order_drinks = get_courier_and_product_selection()
         
             # Order validation
-            if (not order_sandwiches) and (not order_cakes) and (not order_drinks):
+            if order_sandwiches == 'NULL' and order_cakes  == 'NULL' and order_drinks == 'NULL':
                 empty_order_msg()
                 return
 
             # Concatenates order data for use as SQL query to update the db
+            order_number, order_date = order_autocalc()
             order_data = f'\'{order_number}\', \'{order_date}\', \'PREPARING\', \'{order_name}\', \'{order_address}\', \'{order_phone}\', {order_courier}, \'{order_sandwiches}\', \'{order_cakes}\', \'{order_drinks}\''
             order_data = order_data.replace('\'NULL\'', 'NULL')
             create_new_record('order', order_data)
@@ -170,14 +176,14 @@ def create_new_order():
             print('Unfortunately your order cannot be placed at this time. Please call us to place an order.')
         
         return_to_menu()
-
+        
 
 
 ### UPDATING ORDER STATUS ###
 
 def update_order_status():
     statuses = ['PREPARING', 'READY', 'OUT FOR DELIVERY', 'DELIVERED', 'COMPLETED', 'CANCELLED', 'DELAYED', 'REJECTED']
-    print(f'-------- UPDATE ORDER STATUS --------\n')
+    print('-------- UPDATE ORDER STATUS --------\n')
     
     try:
         print_table('order')
@@ -220,7 +226,7 @@ def update_order_status():
             return
     
     else:
-        print(f'\nOrder ID {order_id} could not be found. Order ID is either invalid or it has been deleted from our ' )
+        print(f'\nOrder ID {order_id} could not be found. Order ID is either invalid or it has been deleted from our database.' )
     
     return_to_menu()
 
@@ -290,7 +296,7 @@ def update_order(item_type):
             print('Unfortunately your order cannot be updated at this time. Please call us to amend your order.')
         
     else:
-        print(f'\nOrder {order_id} could not be found. Order ID is either invalid or it has been deleted from our system.' )
+        print(f'\nOrder {order_id} could not be found. Order ID is either invalid or it has been deleted from our database.' )
     
     return_to_menu()
 
