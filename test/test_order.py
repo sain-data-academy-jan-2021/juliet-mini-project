@@ -518,6 +518,5 @@ Order status: PREPARING'''
         # if no error during db call, order record should be updated in db and conf msg printed
         # if there is an error during db call, then user is returned to menu
 
-
 if __name__ == '__main__':
     unittest.main()
